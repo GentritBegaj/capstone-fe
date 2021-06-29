@@ -1,30 +1,83 @@
-import React from 'react';
+import React from "react";
 import {
-  fade,
+  createStyles,
   makeStyles,
   Theme,
-  createStyles,
-} from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import InputBase from '@material-ui/core/InputBase';
-import Badge from '@material-ui/core/Badge';
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
-import MenuIcon from '@material-ui/icons/Menu';
-import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail';
-import NotificationsIcon from '@material-ui/icons/Notifications';
-import MoreIcon from '@material-ui/icons/MoreVert';
+  useTheme,
+} from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
+import { SearchOutlined, AddCircleOutlineOutlined } from "@material-ui/icons";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
-const useStyles = makeStyles((theme: Theme) => createStyles({}));
-
-const NavBar = () => {
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      flexGrow: 1,
+    },
+    toolBar: {
+      display: "flex",
+      justifyContent: "space-between",
+    },
+    logo: {
+      width: "30px",
+      height: "30px",
+      backgroundColor: "red",
+    },
+    linksWrapper: {
+      display: "flex",
+      justifyContent: "space-between",
+    },
+    linkWrapper: {
+      display: "flex",
+      cursor: "pointer",
+      alignItems: "center",
+    },
+    marginLeft: {
+      marginLeft: theme.spacing(2),
+    },
+    avatar: {
+      width: "30px",
+      height: "30px",
+      backgroundColor: "yellow",
+    },
+    searchTrips: { whiteSpace: "nowrap", paddingLeft: theme.spacing(0.5) },
+  })
+);
+export function NavBar() {
   const classes = useStyles();
-  return <div></div>;
-};
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-export default NavBar;
+  return (
+    <div className={classes.root}>
+      <AppBar position="fixed">
+        <Toolbar className={classes.toolBar}>
+          <div className={classes.logo}></div>
+          {isMobile ? (
+            <>hi</>
+          ) : (
+            <>
+              <div className={classes.linksWrapper}>
+                <div className={classes.linkWrapper}>
+                  <SearchOutlined />
+                  <Typography variant="h6" className={classes.searchTrips}>
+                    Search Trips
+                  </Typography>
+                </div>
+                <div className={`${classes.linkWrapper} ${classes.marginLeft}`}>
+                  <AddCircleOutlineOutlined />
+                  <Typography variant="h6" className={classes.searchTrips}>
+                    Add Trip
+                  </Typography>
+                </div>
+              </div>
+            </>
+          )}
+          <div className={classes.avatar}></div>
+        </Toolbar>
+      </AppBar>
+    </div>
+  );
+}
