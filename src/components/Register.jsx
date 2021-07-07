@@ -1,5 +1,5 @@
-import React, { FC, useState } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Grid,
   Paper,
@@ -7,41 +7,41 @@ import {
   Typography,
   TextField,
   Button,
-} from "@material-ui/core";
-import AddCircleOutlineOutlinedIcon from "@material-ui/icons/AddCircleOutlineOutlined";
-import axios from "../axios";
+} from '@material-ui/core';
+import AddCircleOutlineOutlinedIcon from '@material-ui/icons/AddCircleOutlineOutlined';
+import axios from '../axios';
 
-const Register: FC = () => {
+const Register = () => {
   const history = useHistory();
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     await axios
-      .post("/users/register", {
+      .post('/users/register', {
         username,
         email,
         password,
       })
-      .then(() => history.push("/login"))
+      .then(() => history.push('/login'))
       .catch((err) => console.log(err));
-    setUsername("");
-    setEmail("");
-    setPassword("");
+    setUsername('');
+    setEmail('');
+    setPassword('');
   };
 
   const paperStyle = {
-    padding: "30px 20px",
+    padding: '30px 20px',
     width: 300,
-    height: "50vh",
-    margin: "2px auto",
+    height: '50vh',
+    margin: '2px auto',
   };
 
-  const headerStyle = { margin: "5px 0" };
-  const btnStyle = { margin: "15px 0" };
-  const avatarStyle = { backgroundColor: "#1bbd7e" };
+  const headerStyle = { margin: '5px 0' };
+  const btnStyle = { margin: '15px 0' };
+  const avatarStyle = { backgroundColor: '#1bbd7e' };
   return (
     <Grid>
       <Paper elevation={20} style={paperStyle}>
@@ -61,9 +61,7 @@ const Register: FC = () => {
             required
             placeholder="Enter username"
             value={username}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setUsername(e.target.value)
-            }
+            onChange={(e) => setUsername(e.target.value)}
           />
           <TextField
             style={headerStyle}
@@ -73,9 +71,7 @@ const Register: FC = () => {
             required
             placeholder="Enter email"
             value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setEmail(e.target.value)
-            }
+            onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
             style={headerStyle}
@@ -85,9 +81,7 @@ const Register: FC = () => {
             required
             placeholder="Enter password"
             value={password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setPassword(e.target.value)
-            }
+            onChange={(e) => setPassword(e.target.value)}
           />
           <Button
             style={btnStyle}

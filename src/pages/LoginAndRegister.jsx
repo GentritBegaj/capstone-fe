@@ -1,18 +1,18 @@
-import React, { FC, useState } from "react";
-import Register from "../components/Register";
-import Login from "../components/Login";
-import { Paper, Tabs, Tab, Typography, Box } from "@material-ui/core";
+import React, { useState } from 'react';
+import Register from '../components/Register';
+import Login from '../components/Login';
+import { Paper, Tabs, Tab, Typography, Box } from '@material-ui/core';
 
-const LoginAndRegister: FC = () => {
-  const [value, setValue] = useState<number>(0);
+const LoginAndRegister = () => {
+  const [value, setValue] = useState(0);
 
-  const handleChange = (event: any, newValue: number) => {
+  const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const paperStyle = { width: 340, margin: "20px auto" };
+  const paperStyle = { width: 340, margin: '20px auto' };
 
-  const TabPanel = (props: any) => {
+  const TabPanel = (props) => {
     const { children, value, index, ...other } = props;
 
     return (

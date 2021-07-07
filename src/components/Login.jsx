@@ -1,6 +1,6 @@
-import React, { FC } from "react";
-import { useState } from "react";
-import { useHistory } from "react-router-dom";
+import React from 'react';
+import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Grid,
   Paper,
@@ -11,41 +11,41 @@ import {
   Button,
   Link,
   Typography,
-} from "@material-ui/core";
-import axios from "../axios";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+} from '@material-ui/core';
+import axios from '../axios';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
-const Login: FC = () => {
+const Login = () => {
   const history = useHistory();
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     await axios
       .post(
-        "/users/login",
+        '/users/login',
         {
           email,
           password,
         },
         { withCredentials: true }
       )
-      .then(() => history.push("/"))
+      .then(() => history.push('/'))
       .catch((err) => console.log(err));
-    setEmail("");
-    setPassword("");
+    setEmail('');
+    setPassword('');
   };
 
   const paperStyle = {
-    padding: "30px 20px",
+    padding: '30px 20px',
     width: 300,
-    height: "50vh",
-    margin: "2px auto",
+    height: '50vh',
+    margin: '2px auto',
   };
 
-  const avatarStyle = { backgroundColor: "#1bbd7e" };
-  const btnStyle = { margin: "8px 0" };
+  const avatarStyle = { backgroundColor: '#1bbd7e' };
+  const btnStyle = { margin: '8px 0' };
 
   return (
     <div className="login">
@@ -71,9 +71,7 @@ const Login: FC = () => {
               placeholder="Enter email"
               type="email"
               value={email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setEmail(e.target.value)
-              }
+              onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
               style={btnStyle}
@@ -83,9 +81,7 @@ const Login: FC = () => {
               placeholder="Enter password"
               type="password"
               value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setPassword(e.target.value)
-              }
+              onChange={(e) => setPassword(e.target.value)}
             />
             <FormControlLabel
               control={<Checkbox name="checkedB" color="primary" />}
