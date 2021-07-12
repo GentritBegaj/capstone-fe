@@ -1,6 +1,5 @@
 import React from 'react';
 import { useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import {
   Grid,
   Paper,
@@ -16,7 +15,6 @@ import axios from '../axios';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
 const Login = () => {
-  const history = useHistory();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -31,7 +29,10 @@ const Login = () => {
         },
         { withCredentials: true }
       )
-      .then(() => history.push('/'))
+      .then(() => {
+        localStorage.setItem('loggedIn', 'true');
+        window.location.replace('/');
+      })
       .catch((err) => console.log(err));
     setEmail('');
     setPassword('');

@@ -1,6 +1,7 @@
 export const initialState = {
   user: {},
   trips: [],
+  trip: {},
   origin: '',
   destination: '',
   departure: '',
@@ -18,6 +19,11 @@ export const reducer = (state = initialState, action) => {
         ...state,
         trips: [...action.payload],
       };
+    case 'SET_TRIP':
+      return {
+        ...state,
+        trip: action.payload,
+      };
     case 'SET_ORIGIN':
       return {
         ...state,
@@ -33,9 +39,19 @@ export const reducer = (state = initialState, action) => {
         ...state,
         departure: action.payload,
       };
+    case 'SET_NUMBER_OF_PASSENGERS':
+      return {
+        ...state,
+        passengers: action.payload,
+      };
     case 'EMPTY_STATE':
       return {
         user: {},
+        trips: [],
+        trip: {},
+        origin: '',
+        destination: '',
+        departure: '',
       };
     default:
       return state;

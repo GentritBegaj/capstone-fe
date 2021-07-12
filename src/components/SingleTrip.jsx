@@ -2,23 +2,14 @@ import React from 'react';
 import { Paper, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
+import { useHistory, useLocation } from 'react-router-dom';
+import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useStateValue } from '../contextAPI/StateProvider';
 
 const useStyles = makeStyles((theme) => ({
-  paperStyleSingle: {
-    width: '50%',
-    minHeight: '18%',
-    backgroundColor: '#fffefe',
-    marginBottom: theme.spacing(2),
-    borderRadius: '10px',
-    padding: '15px',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-  },
   paperStyle: {
-    width: '50%',
-    minHeight: '23%',
+    width: '100%',
+    minHeight: 'fit-content',
     backgroundColor: '#fffefe',
     marginBottom: theme.spacing(2),
     borderRadius: '10px',
@@ -26,54 +17,77 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    cursor: 'pointer',
+  },
+  moreIconWrapper: {
+    textAlign: 'right',
+    paddingBottom: 10,
   },
   topWrapper: {
     display: 'flex',
     width: '100%',
     justifyContent: 'space-between',
+    height: 120,
+
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      flexDirection: 'column',
+      fontSize: 13,
+    },
   },
   topLeft: {
     display: 'flex',
     alignItems: 'center',
+    height: '100%',
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: 15,
+    },
   },
   topLeftLineWrapper: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     margin: '0 15px',
+    height: '100%',
   },
   topLeftLine: {
-    height: '55px',
+    height: '100%',
     backgroundColor: 'black',
     width: '3px',
     border: '2px solid black',
   },
   topLeftCircle: {
-    height: '8px',
-    width: '8px',
-    border: '2px solid black',
+    height: 8,
+    width: 8,
+    border: '3px solid black',
     borderRadius: '50%',
   },
   topLeftText: {
-    height: '77px',
+    height: '100%',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    alignItems: 'start',
   },
   topRight: {
     fontWeight: 'bold',
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: 'auto',
+    },
   },
   bottomWrapper: {
     width: '100%',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 25,
   },
   bottomLeft: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     minWidth: '80px',
+    marginRight: 30,
   },
 
   driverInfo: {
@@ -86,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   seats: {
-    hover: {},
+    marginLeft: 'auto',
   },
   star: {
     fontSize: '10px',
@@ -95,12 +109,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const SingleTrip = ({ trip }) => {
-  const [{ user }, dispatch] = useStateValue();
+  const history = useHistory();
+  // const location = useLocation();
   const classes = useStyles();
+  const [{ user }, dispatch] = useStateValue();
 
   return (
     <>
-      <Paper elevation={5} className={classes.paperStyle}>
+      <Paper
+        elevation={5}
+        className={classes.paperStyle}
+        onClick={() => history.push(`/trip-details/${trip._id}`)}
+      >
+        {trip.owner._id === user._id && (
+          <div className={classes.moreIconWrapper}>
+            <MoreHorizIcon />
+          </div>
+        )}
         <div className={classes.topWrapper}>
           <div className={classes.topLeft}>
             <div className={classes.topLeftText}>
@@ -128,9 +153,9 @@ const SingleTrip = ({ trip }) => {
             <Avatar src={trip.owner.profilePic} />
             <div className={classes.driverInfo}>
               <p>
-                {user.username &&
-                  user.username.charAt(0).toUpperCase() +
-                    user.username.slice(1)}
+                {trip.owner.username &&
+                  trip.owner.username.charAt(0).toUpperCase() +
+                    trip.owner.username.slice(1)}
               </p>
               <p className={classes.driverInfoBottom}>
                 <span className={classes.star}>⭐ </span> 5.0
@@ -140,14 +165,14 @@ const SingleTrip = ({ trip }) => {
           <div className={classes.bottomRight}>
             <Tooltip
               title={
-                trip.maxParticipants > 1
-                  ? `${trip.maxParticipants} seats available`
-                  : `${trip.maxParticipants} seat available`
+                trip.seatsLeft > 1
+                  ? `${trip.seatsLeft} seats available`
+                  : `${trip.seatsLeft} seat available`
               }
               placement="top-end"
             >
               <p className={classes.seats}>
-                {new Array(parseInt(trip.maxParticipants)).fill('💺')}
+                {new Array(parseInt(trip.seatsLeft)).fill('💺')}
               </p>
             </Tooltip>
           </div>

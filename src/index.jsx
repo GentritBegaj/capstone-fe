@@ -5,11 +5,14 @@ import App from './App';
 import { SnackbarProvider } from 'notistack';
 import { StateProvider } from './contextAPI/StateProvider';
 import { initialState, reducer } from './contextAPI/reducer';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 ReactDOM.render(
-  <SnackbarProvider maxSnacks={3}>
+  <SnackbarProvider>
     <StateProvider initialState={initialState} reducer={reducer}>
-      <App />
+      <Router>
+        <App />
+      </Router>
     </StateProvider>
   </SnackbarProvider>,
   document.getElementById('root')

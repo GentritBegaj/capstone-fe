@@ -13,6 +13,7 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import { useForm } from 'react-hook-form';
 import axios from '../axios';
 import { useSnackbar } from 'notistack';
+import PlacesAutocomplete from 'react-places-autocomplete';
 
 const useStyles = makeStyles((theme) => ({
   mainGrid: {
@@ -27,8 +28,7 @@ const useStyles = makeStyles((theme) => ({
     overflowY: 'scroll',
   },
   paperStyleSingle: {
-    width: '60%',
-    // minHeight: '60%',
+    width: '65%',
     height: 'fit-content',
     backgroundColor: '#fffefe',
     marginBottom: theme.spacing(2),
@@ -38,11 +38,16 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignContent: 'center',
     justifyContent: 'space-between',
+
+    [theme.breakpoints.down('sm')]: {
+      width: '85%',
+    },
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    position: 'relative',
   },
   textInput: {
     width: '100%',
@@ -58,11 +63,27 @@ const useStyles = makeStyles((theme) => ({
     color: 'red',
     margin: '5px',
   },
+  list: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: 0,
+  },
+  listItem: {
+    display: 'flex',
+    justifyContent: 'space-between',
+  },
   spanText: {
-    fontSize: '16px',
+    fontSize: '14px',
     fontWeight: 'normal',
-    display: 'inline-block',
-    marginLeft: 'auto',
+    display: 'block',
+  },
+  suggestionsDiv: {
+    position: 'absolute',
+    zIndex: 200,
+    height: 'fit-content',
+    display: 'flex',
+    flexDirection: 'column',
+    width: '100%',
   },
 }));
 
@@ -88,9 +109,10 @@ export const AddTrip = () => {
     pricePerPerson: null,
     description: '',
   });
+  const [originCityError, setOriginCityError] = useState(false);
+  const [destinationCityError, setDestinationCityError] = useState(false);
 
   const nextStep = (e) => {
-    e.preventDefault();
     setFormStep((prevFormStep) => setFormStep(prevFormStep + 1));
   };
   const prevStep = (e) => {
@@ -113,7 +135,11 @@ export const AddTrip = () => {
         withCredentials: true,
       })
         .then((response) => {
-          enqueueSnackbar(`Trip was successfully published`, 'success');
+          enqueueSnackbar(`Trip was successfully published`, {
+            autoHideDuration: 1000,
+            anchorOrigin: { horizontal: 'right', vertical: 'top' },
+          });
+          window.location.replace('/');
         })
         .catch((err) => enqueueSnackbar(err.message), 'error');
     } catch (error) {
@@ -140,45 +166,147 @@ export const AddTrip = () => {
                   }
                 >
                   <h2>What is the origin and destination of your trip?</h2>
-                  <TextField
-                    type="text"
-                    label="Where are you leaving from?"
-                    placeholder="Enter the city name you are leaving from..."
-                    className={classes.textInput}
-                    name="originCity"
-                    {...register('originCity', {
-                      required: {
-                        value: true,
-                        message: 'Origin city of trip is required',
-                      },
-                    })}
+                  <PlacesAutocomplete
                     value={tripObject.originCity}
-                    onChange={handleChange}
-                  />
-                  <TextField
-                    label="Where are you going?"
-                    type="text"
-                    placeholder="Enter the city name you are travelling to..."
-                    className={classes.textInput}
-                    name="destinationCity"
-                    {...register('destinationCity', {
-                      required: {
-                        value: true,
-                        message: 'Destination city of trip is required',
-                      },
-                    })}
+                    onChange={(e) => {
+                      setTripObject({ ...tripObject, originCity: e });
+                    }}
+                    onSelect={(e) => {
+                      setTripObject({ ...tripObject, originCity: e });
+                    }}
+                    onEnter={(e) => {
+                      setTripObject({ ...tripObject, originCity: e });
+                    }}
+                  >
+                    {({
+                      getInputProps,
+                      suggestions,
+                      getSuggestionItemProps,
+                      loading,
+                    }) => (
+                      <div>
+                        <TextField
+                          className={classes.textInput}
+                          type="text"
+                          name="originCity"
+                          label="Where are you leaving from?"
+                          required
+                          InputProps={{ disableUnderline: true }}
+                          {...getInputProps({
+                            label: 'Where are you leaving from?',
+                          })}
+                        />
+                        <div className={classes.suggestionsDiv}>
+                          {loading && <div>Loading...</div>}
+                          {suggestions.map((suggestion) => {
+                            const style = suggestion.active
+                              ? {
+                                  backgroundColor: '#e04040',
+                                  cursor: 'pointer',
+                                }
+                              : { backgroundColor: '#aaa', cursor: 'pointer' };
+
+                            return (
+                              <div
+                                {...getSuggestionItemProps(suggestion, {
+                                  style,
+                                })}
+                              >
+                                {suggestion.description}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        {originCityError && (
+                          <p className={classes.error}>
+                            Origin city of trip is required
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </PlacesAutocomplete>
+
+                  <PlacesAutocomplete
                     value={tripObject.destinationCity}
-                    onChange={handleChange}
-                  />
-                  {errors.originCity && (
-                    <p className={classes.error}>{errors.originCity.message}</p>
-                  )}
-                  {errors.destinationCity && (
-                    <p className={classes.error}>
-                      {errors.destinationCity.message}
-                    </p>
-                  )}
+                    onChange={(e) =>
+                      setTripObject({ ...tripObject, destinationCity: e })
+                    }
+                    onSelect={(e) =>
+                      setTripObject({ ...tripObject, destinationCity: e })
+                    }
+                    onEnter={(e) => {
+                      setTripObject({ ...tripObject, destinationCity: e });
+                    }}
+                  >
+                    {({
+                      getInputProps,
+                      suggestions,
+                      getSuggestionItemProps,
+                      loading,
+                    }) => (
+                      <div>
+                        <TextField
+                          className={classes.textInput}
+                          type="text"
+                          InputProps={{ disableUnderline: true }}
+                          name="destinationCity"
+                          {...getInputProps({
+                            label: 'Where are you going?',
+                          })}
+                        />
+                        <div className={classes.suggestionsDiv}>
+                          {loading && <div>Loading...</div>}
+                          {suggestions.map((suggestion) => {
+                            const style = suggestion.active
+                              ? {
+                                  backgroundColor: '#e04040',
+                                  cursor: 'pointer',
+                                }
+                              : { backgroundColor: '#aaa', cursor: 'pointer' };
+
+                            return (
+                              <div
+                                {...getSuggestionItemProps(suggestion, {
+                                  style,
+                                })}
+                              >
+                                {suggestion.description}
+                              </div>
+                            );
+                          })}
+                        </div>
+                        {destinationCityError && (
+                          <p className={classes.error}>
+                            Destination city of trip is required
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </PlacesAutocomplete>
                 </section>
+                {formStep === 0 && (
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      tripObject.originCity === ''
+                        ? setOriginCityError(true)
+                        : setOriginCityError(false);
+                      tripObject.destinationCity === ''
+                        ? setDestinationCityError(true)
+                        : setDestinationCityError(false);
+
+                      if (
+                        tripObject.originCity !== '' &&
+                        tripObject.destinationCity !== ''
+                      ) {
+                        nextStep();
+                      }
+                    }}
+                    style={{ marginLeft: 'auto', backgroundColor: '#0ab858eb' }}
+                  >
+                    Next
+                  </Button>
+                )}
               </>
             )}
             {formStep >= 1 && (
@@ -303,7 +431,7 @@ export const AddTrip = () => {
                   <h2>How many free seats do you have?</h2>
                   <TextField
                     type="number"
-                    inputProps={{ min: 1, max: 10 }}
+                    inputProps={{ min: 1, max: 4 }}
                     placeholder="Set the number of free seats you have..."
                     className={classes.textInput}
                     name="maxParticipants"
@@ -388,45 +516,45 @@ export const AddTrip = () => {
               </section>
             )}
             {formStep === 6 && (
-              <List>
-                <ListItem>
+              <List className={classes.list}>
+                <ListItem className={classes.listItem}>
                   <h5>From:</h5>
                   <span className={classes.spanText}>
                     {tripObject.originCity}
                   </span>
                 </ListItem>
-                <ListItem>
+                <ListItem className={classes.listItem}>
                   <h5>To: </h5>
                   <span className={classes.spanText}>
                     {tripObject.destinationCity}
                   </span>
                 </ListItem>
-                <ListItem>
+                <ListItem className={classes.listItem}>
                   <h5>Number of seats available: </h5>
                   <span className={classes.spanText}>
                     {tripObject.maxParticipants}
                   </span>
                 </ListItem>
-                <ListItem>
+                <ListItem className={classes.listItem}>
                   <h5>Departure time: </h5>
                   <span className={classes.spanText}>
                     {tripObject.departureTime}
                   </span>
                 </ListItem>
-                <ListItem>
+                <ListItem className={classes.listItem}>
                   <h5>Arrival time: </h5>
                   <span className={classes.spanText}>
                     {tripObject.arrivalTime}
                   </span>
                 </ListItem>
-                <ListItem>
+                <ListItem className={classes.listItem}>
                   <h5>Price per seat: </h5>
                   <span className={classes.spanText}>
                     {tripObject.pricePerPerson}
                   </span>
                 </ListItem>
-                <ListItem>
-                  <h5>Description: </h5>
+                <ListItem className={classes.listItem}>
+                  <h5 style={{ marginRight: 75 }}>Description: </h5>
                   <span className={classes.spanText}>
                     {tripObject.description}
                   </span>
@@ -443,7 +571,7 @@ export const AddTrip = () => {
                   Back
                 </Button>
               )}
-              {formStep < 6 && (
+              {formStep > 0 && formStep < 6 && (
                 <Button
                   variant="contained"
                   disabled={!isValid}

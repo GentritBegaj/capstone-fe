@@ -16,11 +16,15 @@ import AddIcon from '@material-ui/icons/Add';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { Link, useHistory } from 'react-router-dom';
 import { useStateValue } from '../contextAPI/StateProvider';
+import axios from '../axios';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
     grow: {
       flexGrow: 1,
+      position: 'sticky',
+      top: 0,
+      zIndex: 99,
     },
     appBar: {
       backgroundColor: '#7f8cd1',
@@ -66,6 +70,18 @@ export function NavBar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
+  const handleLogout = async () => {
+    await axios
+      .get('/users/logout', { withCredentials: true })
+      .then((response) => {
+        window.location.replace('/login');
+        dispatch({
+          type: 'EMPTY_STATE',
+        });
+        localStorage.setItem('loggedIn', 'false');
+      });
+  };
+
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -97,8 +113,8 @@ export function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => history.push('/me')}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={() => history.push('/me')}>Me</MenuItem>
+      <MenuItem onClick={handleLogout}>Log out</MenuItem>
     </Menu>
   );
 
@@ -218,7 +234,7 @@ export function NavBar() {
               onClick={handleProfileMenuOpen}
               color="inherit"
             >
-              <Avatar src="" />
+              <Avatar src={user.profilePic} />
             </IconButton>
           </div>
           <div className={classes.sectionMobile}>

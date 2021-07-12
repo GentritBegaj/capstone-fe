@@ -20,10 +20,13 @@ const useStyles = makeStyles((theme) => ({
     overflowY: 'scroll',
   },
   paperStyleSingle: {
-    width: '50%',
-    minHeight: '18%',
+    width: '70%',
+    minHeight: '24%',
     backgroundColor: '#fffefe',
-    marginTop: theme.spacing(10),
+    zIndex: 100,
+    position: 'sticky',
+    top: theme.spacing(0),
+    marginTop: theme.spacing(2),
     marginBottom: theme.spacing(2),
     borderRadius: '10px',
     padding: '15px',
@@ -31,14 +34,17 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'center',
-    position: 'sticky',
+  },
+  tripsDiv: {
+    width: '67vw',
   },
 }));
 
 const Trips = () => {
   const history = useHistory();
   const classes = useStyles();
-  const [{ trips, origin, destination, departure }, dispatch] = useStateValue();
+  const [{ user, trips, origin, destination, departure }, dispatch] =
+    useStateValue();
   let today = moment(new Date()).clone().startOf('day');
   const tripDate = moment(departure).clone().startOf('day');
   const diffDays = tripDate.diff(today, 'days');
@@ -47,6 +53,7 @@ const Trips = () => {
     if (departure === '') {
       history.push('/find-trip');
     }
+    // eslint-disable-next-line
   }, []);
 
   return (
@@ -66,12 +73,20 @@ const Trips = () => {
           </p>
 
           <p>
-            {trips.length !== 1
-              ? `${trips.length} rides available`
-              : `${trips.length} ride available`}
+            {trips &&
+            trips.filter((trip) => trip.owner._id !== user._id).length !== 1
+              ? `${
+                  trips.filter((trip) => trip.owner._id !== user._id).length
+                } rides available`
+              : `${
+                  trips.filter((trip) => trip.owner._id !== user._id).length
+                } ride available`}
           </p>
         </Paper>
-        {trips && trips.map((trip) => <SingleTrip trip={trip} />)}
+        <div className={classes.tripsDiv}>
+          {trips &&
+            trips.map((trip) => <SingleTrip trip={trip} key={trip._id} />)}
+        </div>
       </Grid>
     </div>
   );
