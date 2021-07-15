@@ -205,6 +205,44 @@ const TripDetails = () => {
     }
   };
 
+  const startConversation = async () => {
+    try {
+      const response = await axios.get('/conversations', {
+        withCredentials: true,
+      });
+      const conversations = response.data;
+      const existingConversation = conversations.find((conversation) =>
+        conversation.members.find((member) => member._id === trip.owner._id)
+      );
+      if (existingConversation) {
+        dispatch({
+          type: 'SET_CURRENT_CONVERSATION',
+          payload: existingConversation,
+        });
+        history.push('/messages');
+      } else {
+        try {
+          const response = await axios.post(
+            '/conversations',
+            {
+              receiverId: trip.owner._id,
+            },
+            { withCredentials: true }
+          );
+          dispatch({
+            type: 'SET_CURRENT_CONVERSATION',
+            payload: response.data,
+          });
+          history.push('/messages');
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   console.log(trip);
 
   return (
@@ -269,7 +307,7 @@ const TripDetails = () => {
               </div>
             )}
             {trip?.owner._id !== user._id && (
-              <div className={classes.contactDiv}>
+              <div className={classes.contactDiv} onClick={startConversation}>
                 <p style={{ marginRight: 5 }}>
                   Contact{' '}
                   {trip?.owner &&

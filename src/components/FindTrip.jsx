@@ -59,6 +59,7 @@ const useStyles = makeStyles((theme) =>
 );
 
 const FindTrip = () => {
+  // eslint-disable-next-line no-unused-vars
   const [state, dispatch] = useStateValue();
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
@@ -126,7 +127,7 @@ const FindTrip = () => {
         className={classes.mainGrid}
         direction="column"
         alignItems="center"
-        justify="center"
+        justifyContent="center"
         style={{ height: 'calc(100vh - 64px)', backgroundColor: '#ebdddd' }}
       >
         <form className={classes.form} onSubmit={handleSubmit}>
@@ -152,13 +153,16 @@ const FindTrip = () => {
                 />
                 <div className={classes.suggestionsDiv}>
                   {loading && <div>Loading...</div>}
-                  {suggestions.map((suggestion) => {
+                  {suggestions.map((suggestion, i) => {
                     const style = suggestion.active
                       ? { backgroundColor: '#e04040', cursor: 'pointer' }
                       : { backgroundColor: '#aaa', cursor: 'pointer' };
 
                     return (
-                      <div {...getSuggestionItemProps(suggestion, { style })}>
+                      <div
+                        key={i}
+                        {...getSuggestionItemProps(suggestion, { style })}
+                      >
                         {suggestion.description}
                       </div>
                     );
@@ -190,13 +194,16 @@ const FindTrip = () => {
                 />
                 <div className={classes.suggestionsDiv}>
                   {loading && <div>Loading...</div>}
-                  {suggestions.map((suggestion) => {
+                  {suggestions.map((suggestion, i) => {
                     const style = suggestion.active
                       ? { backgroundColor: '#e04040', cursor: 'pointer' }
                       : { backgroundColor: '#aaa', cursor: 'pointer' };
 
                     return (
-                      <div {...getSuggestionItemProps(suggestion, { style })}>
+                      <div
+                        key={11111 + i}
+                        {...getSuggestionItemProps(suggestion, { style })}
+                      >
                         {suggestion.description}
                       </div>
                     );

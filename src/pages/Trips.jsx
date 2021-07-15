@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
 const Trips = () => {
   const history = useHistory();
   const classes = useStyles();
+  // eslint-disable-next-line no-unused-vars
   const [{ user, trips, origin, destination, departure }, dispatch] =
     useStateValue();
   let today = moment(new Date()).clone().startOf('day');

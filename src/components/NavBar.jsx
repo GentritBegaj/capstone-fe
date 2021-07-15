@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
@@ -69,6 +69,7 @@ export function NavBar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const newMessagesRef = useRef();
 
   const handleLogout = async () => {
     await axios
@@ -113,7 +114,7 @@ export function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => history.push('/me')}>Me</MenuItem>
+      <MenuItem onClick={() => window.location.replace('/me')}>Me</MenuItem>
       <MenuItem onClick={handleLogout}>Log out</MenuItem>
     </Menu>
   );
@@ -141,11 +142,11 @@ export function NavBar() {
         </IconButton>
         <p>Publish a ride</p>
       </MenuItem>
-      <MenuItem>
+      <MenuItem onClick={() => window.location.replace('/messages')}>
         <IconButton aria-label="show 4 new mails" color="inherit">
-          <Badge badgeContent={4} color="secondary">
-            <MailIcon />
-          </Badge>
+          {/* <Badge badgeContent={4} color="secondary"> */}
+          <MailIcon />
+          {/* </Badge> */}
         </IconButton>
         <p>Messages</p>
       </MenuItem>
@@ -166,7 +167,7 @@ export function NavBar() {
         >
           <Avatar src={user.profilePic} />
         </IconButton>
-        <p onClick={() => history.push('/me')}>Profile</p>
+        <p onClick={() => window.location.replace('/me')}>Profile</p>
       </MenuItem>
     </Menu>
   );
@@ -216,7 +217,11 @@ export function NavBar() {
               </div>
             </div>
 
-            <IconButton aria-label="show 4 new mails" color="inherit">
+            <IconButton
+              onClick={() => window.location.replace('/messages')}
+              aria-label="show 4 new mails"
+              color="inherit"
+            >
               <Badge badgeContent={4} color="secondary">
                 <MailIcon />
               </Badge>

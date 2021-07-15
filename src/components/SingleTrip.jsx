@@ -2,7 +2,7 @@ import React from 'react';
 import { Paper, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useStateValue } from '../contextAPI/StateProvider';
 
@@ -112,6 +112,7 @@ const SingleTrip = ({ trip }) => {
   const history = useHistory();
   // const location = useLocation();
   const classes = useStyles();
+  // eslint-disable-next-line no-unused-vars
   const [{ user }, dispatch] = useStateValue();
 
   return (

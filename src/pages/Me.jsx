@@ -8,6 +8,7 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import axios from '../axios';
 import moment from 'moment';
 import SingleTrip from '../components/SingleTrip';
+import { Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -100,6 +101,10 @@ const Profile = () => {
     setUserObject({ ...userObject, [name]: e.target.value });
     console.log(userObject);
   };
+
+  if (localStorage.getItem('loggedIn') !== 'true') {
+    return <Redirect to="login" />;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();

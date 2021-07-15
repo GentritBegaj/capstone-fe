@@ -80,6 +80,7 @@ const useStyles = makeStyles((theme) =>
   })
 );
 export const Banner = () => {
+  // eslint-disable-next-line no-unused-vars
   const [state, dispatch] = useStateValue();
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
@@ -169,13 +170,16 @@ export const Banner = () => {
               />
               <div className={classes.suggestionsDiv}>
                 {loading && <div>Loading...</div>}
-                {suggestions.map((suggestion) => {
+                {suggestions.map((suggestion, i) => {
                   const style = suggestion.active
                     ? { backgroundColor: '#e04040', cursor: 'pointer' }
                     : { backgroundColor: '#fff', cursor: 'pointer' };
 
                   return (
-                    <div {...getSuggestionItemProps(suggestion, { style })}>
+                    <div
+                      key={i}
+                      {...getSuggestionItemProps(suggestion, { style })}
+                    >
                       {suggestion.description}
                     </div>
                   );
@@ -207,13 +211,16 @@ export const Banner = () => {
               />
               <div className={classes.suggestionsDiv}>
                 {loading && <div>Loading...</div>}
-                {suggestions.map((suggestion) => {
+                {suggestions.map((suggestion, i) => {
                   const style = suggestion.active
                     ? { backgroundColor: '#e04040', cursor: 'pointer' }
                     : { backgroundColor: '#fff', cursor: 'pointer' };
 
                   return (
-                    <div {...getSuggestionItemProps(suggestion, { style })}>
+                    <div
+                      key={22222 + i}
+                      {...getSuggestionItemProps(suggestion, { style })}
+                    >
                       {suggestion.description}
                     </div>
                   );

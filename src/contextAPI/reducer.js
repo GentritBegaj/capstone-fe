@@ -5,6 +5,8 @@ export const initialState = {
   origin: '',
   destination: '',
   departure: '',
+  conversations: [],
+  currentConversation: null,
 };
 
 export const reducer = (state = initialState, action) => {
@@ -43,6 +45,21 @@ export const reducer = (state = initialState, action) => {
       return {
         ...state,
         passengers: action.payload,
+      };
+    case 'SET_CONVERSATIONS':
+      return {
+        ...state,
+        conversations: action.payload,
+      };
+    case 'SET_CURRENT_CONVERSATION':
+      return {
+        ...state,
+        currentConversation: action.payload,
+      };
+    case 'SET_ONLINE_USERS':
+      return {
+        ...state,
+        onlineUsers: action.payload,
       };
     case 'EMPTY_STATE':
       return {

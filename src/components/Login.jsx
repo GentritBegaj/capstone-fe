@@ -55,7 +55,7 @@ const Login = () => {
           <Grid
             container
             direction="column"
-            justify="center"
+            justifyContent="center"
             alignItems="center"
           >
             <Avatar style={avatarStyle}>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Backdrop, CircularProgress } from '@material-ui/core';
 import axios from '../axios';
 import { NavBar } from './NavBar';
 import { useStateValue } from '../contextAPI/StateProvider';
@@ -161,6 +161,11 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     justifyContent: 'space-between',
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+    position: 'relative',
+  },
 }));
 
 const CARD_OPTIONS = {
@@ -185,13 +190,17 @@ const CARD_OPTIONS = {
 
 const PaymentForm = () => {
   const [success, setSuccess] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [{ trip, passengers }, dispatch] = useStateValue();
+  const [loading, setLoading] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
   const classes = useStyles();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    setLoading(true);
 
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: 'card',
@@ -209,7 +218,6 @@ const PaymentForm = () => {
 
         if (response.data.success) {
           console.log('Successful payment');
-          setSuccess(true);
 
           try {
             await axios
@@ -220,7 +228,10 @@ const PaymentForm = () => {
                 },
                 { withCredentials: true }
               )
-              .then((response) => console.log(response))
+              .then((response) => {
+                setLoading(false);
+                setSuccess(true);
+              })
               .catch((err) => console.log(err));
           } catch (error) {
             console.log(error);
@@ -262,6 +273,11 @@ const PaymentForm = () => {
             </form>
           </div>
         </>
+      )}
+      {loading && (
+        <Backdrop className={classes.backdrop} open={loading}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
       )}
       {success && (
         <Grid container className={classes.root2}>

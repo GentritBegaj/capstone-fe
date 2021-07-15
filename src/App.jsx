@@ -14,22 +14,35 @@ import Profile from './pages/Profile';
 import StripeContainer from './components/StripeContainer';
 import scriptLoader from 'react-async-script-loader';
 import Messages from './pages/Messages';
+import { io } from 'socket.io-client';
+import { Redirect } from 'react-router-dom';
+
+export const socket = io(`ws://localhost:3001`, {
+  withCredentials: true,
+  transports: ['websocket'],
+});
 
 const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
+  // eslint-disable-next-line no-unused-vars
   const [state, dispatch] = useStateValue();
   const history = useHistory();
 
   useEffect(() => {
     const fetchUser = async () => {
-      await axios
-        .get('/users/me', { withCredentials: true })
-        .then((response) => {
-          dispatch({
-            type: 'SET_USER',
-            payload: response.data,
-          });
-        })
-        .catch((err) => console.log(err));
+      try {
+        await axios
+          .get('/users/me', { withCredentials: true })
+          .then((response) => {
+            dispatch({
+              type: 'SET_USER',
+              payload: response.data,
+            });
+            socket.emit('isOnline', { userID: response.data._id });
+          })
+          .catch((err) => console.log(err));
+      } catch (error) {
+        console.log(error);
+      }
     };
     // fetchUser();
 
@@ -38,6 +51,33 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
       : fetchUser();
     //eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    socket.on('connect', () => {
+      // console.log(socket.id);
+    });
+  }, []);
+
+  // useEffect(() => {
+  //   const fetchConversations = async () => {
+  //     try {
+  //       await axios
+  //         .get('/conversations', { withCredentials: true })
+  //         .then((response) => {
+  //           //   setConversations(response.data);
+  //           console.log(response.data);
+  //           // dispatch({
+  //           //   type: 'SET_CONVERSATIONS',
+  //           //   payload: response.data,
+  //           // });
+  //         })
+  //         .catch((error) => console.log(error));
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   fetchConversations();
+  // }, []);
 
   if (isScriptLoaded && isScriptLoadSucceed) {
     return (
