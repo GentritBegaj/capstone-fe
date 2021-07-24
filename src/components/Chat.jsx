@@ -39,7 +39,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Chat = ({ conversations, fetchConversations, setConversations }) => {
+const Chat = ({
+  conversations,
+  fetchConversations,
+  setConversations,
+  loadingMessages,
+}) => {
   const classes = useStyles();
   const [{ user, currentConversation }, dispatch] = useStateValue();
   const [input, setInput] = useState('');
@@ -58,26 +63,27 @@ const Chat = ({ conversations, fetchConversations, setConversations }) => {
         (conversation) => conversation._id === currentConversation?._id
       )?.messages
     );
-  }, [currentConversation]);
+    //eslint-disable-next-line
+  }, []);
 
   useEffect(() => {
     socket.on('newMessage', (message) => {
-      //   if (currentConversation?._id !== message.conversationId) {
-      let actualConversation = conversations.find(
-        (c) => c._id === message.conversationId
-      );
-      actualConversation = {
-        ...actualConversation,
-        messages: [...actualConversation.messages, message],
-      };
-      setConversations((prevConversations) => [
-        ...prevConversations.filter((c) => c._id !== message.conversationId),
-        actualConversation,
-      ]);
-      //   }
-      //   if (currentConversation._id === message.conversationId) {
-      //     setMessages((prevMessages) => [...prevMessages, message]);
-      //   }
+      // if (currentConversation?._id !== message.conversationId) {
+      //   let actualConversation = conversations.find(
+      //     (c) => c._id === message.conversationId
+      //   );
+      //   actualConversation = {
+      //     ...actualConversation,
+      //     messages: [...actualConversation.messages, message],
+      //   };
+      //   setConversations((prevConversations) => [
+      //     ...prevConversations.filter((c) => c._id !== message.conversationId),
+      //     actualConversation,
+      //   ]);
+      // }
+      if (currentConversation._id === message.conversationId) {
+        setMessages((prevMessages) => [...prevMessages, message]);
+      }
     });
     //eslint-disable-next-line
   }, []);
@@ -110,6 +116,20 @@ const Chat = ({ conversations, fetchConversations, setConversations }) => {
               createdAt: new Date(),
             };
 
+            // let actualConversation = conversations.find(
+            //   (c) => c._id === messageToDisplay.conversationId
+            // );
+            // actualConversation = {
+            //   ...actualConversation,
+            //   messages: [...actualConversation.messages, messageToDisplay],
+            // };
+            // setConversations((prevConversations) => [
+            //   ...prevConversations.filter(
+            //     (c) => c._id !== messageToDisplay.conversationId
+            //   ),
+            //   actualConversation,
+            // ]);
+
             setMessages((prevMessages) => [...prevMessages, messageToDisplay]);
 
             socket.emit('sendMessage', messageToDisplay);
@@ -136,7 +156,8 @@ const Chat = ({ conversations, fetchConversations, setConversations }) => {
           </div>
         </div>
         <div className={classes.middleWrapper}>
-          {messages?.length > 0 ? (
+          {!loadingMessages &&
+            messages?.length > 0 &&
             messages?.map((message) => (
               <div ref={scrollRef}>
                 <Message
@@ -145,10 +166,15 @@ const Chat = ({ conversations, fetchConversations, setConversations }) => {
                   own={message.sender === user._id}
                 />
               </div>
-            ))
-          ) : (
+            ))}
+          {!loadingMessages && messages?.length === 0 && (
             <p style={{ textAlign: 'center', marginTop: '30%' }}>
               No messages to show
+            </p>
+          )}
+          {loadingMessages && (
+            <p style={{ textAlign: 'center', marginTop: '30%' }}>
+              Loading messages...
             </p>
           )}
         </div>

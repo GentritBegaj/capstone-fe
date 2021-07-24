@@ -36,13 +36,16 @@ const Messages = () => {
   // eslint-disable-next-line no-unused-vars
   const [{ user, currentConversation }, dispatch] = useStateValue();
   const [conversations, setConversations] = useState([]);
+  const [loadingMessages, setLoadingMessages] = useState(false);
 
   const fetchConversations = async () => {
+    setLoadingMessages(true);
     try {
       await axios
         .get('/conversations', { withCredentials: true })
         .then((response) => {
           setConversations(response.data);
+          setLoadingMessages(false);
           console.log(response.data);
           if (currentConversation === null) {
             dispatch({
@@ -51,15 +54,19 @@ const Messages = () => {
             });
           }
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          setLoadingMessages(false);
+          console.log(error);
+        });
     } catch (error) {
+      setLoadingMessages(false);
       console.log(error);
     }
   };
   useEffect(() => {
     fetchConversations();
     //eslint-disable-next-line
-  }, []);
+  }, [currentConversation]);
 
   return (
     <>
@@ -91,6 +98,7 @@ const Messages = () => {
                   conversations={conversations}
                   fetchConversations={fetchConversations}
                   setConversations={setConversations}
+                  loadingMessages={loadingMessages}
                 />
               ) : (
                 <p

@@ -75,7 +75,9 @@ const FindTrip = () => {
     if (from !== '' && to !== '' && date !== '') {
       const query = `/trips${from !== '' ? `?originCity='${from}'` : ''}${
         to !== '' ? `&destinationCity='${to}'` : ''
-      }${date !== '' ? `&departureDate=${date}` : ''}&seatsLeft=${seatsLeft}`;
+      }${
+        date !== '' ? `&departureDate=${date}` : ''
+      }&seatsLeft=${seatsLeft}&cancelled=false`;
 
       dispatch({
         type: 'SET_ORIGIN',
@@ -254,7 +256,7 @@ const FindTrip = () => {
             type="submit"
             disabled={!(from !== '' && to !== '' && date !== '')}
             style={{
-              backgroundColor: '#227cb8',
+              backgroundColor: '#3f98bb',
               color: '#fff',
               height: 85,
               cursor: 'pointer',

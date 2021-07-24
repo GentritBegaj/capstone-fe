@@ -20,8 +20,8 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     [theme.breakpoints.down('xs')]: {
-      width: '35px',
-      height: '35px',
+      width: '30px',
+      height: '30px',
     },
   },
   userInfoWrapper: {
@@ -73,9 +73,10 @@ const Contact = ({ conversation }) => {
   // eslint-disable-next-line no-unused-vars
   const [{ user, currentConversation }, dispatch] = useStateValue();
   const [onlineUsers, setOnlineUsers] = useState([]);
+  const [conversationCopy, setConversationCopy] = useState(conversation);
   const newMessagesNumberRef = useRef(0);
 
-  const getReceiver = conversation?.members?.find(
+  const getReceiver = conversationCopy?.members?.find(
     (member) => member._id !== user._id
   );
 
@@ -92,6 +93,38 @@ const Contact = ({ conversation }) => {
     //eslint-disable-next-line
   }, []);
 
+  useEffect(() => {
+    socket.on('ownMessage', (message) => {
+      if (
+        message.sender === user._id &&
+        conversation._id === message.conversationId
+      ) {
+        // console.log(message);
+        setConversationCopy({
+          ...conversationCopy,
+          messages: [...conversationCopy.messages, message],
+          updatedAt: new Date(),
+        });
+      }
+      // console.log(conversationCopy);
+    });
+    //eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    socket.on('newMessage', (message) => {
+      if (conversation._id === message.conversationId) {
+        setConversationCopy({
+          ...conversationCopy,
+          messages: [...conversationCopy?.messages, message],
+          updatedAt: new Date(),
+        });
+        // console.log(conversationCopy);
+      }
+    });
+    //eslint-disable-next-line
+  }, []);
+
   return (
     <div
       onClick={() => {
@@ -101,7 +134,7 @@ const Contact = ({ conversation }) => {
         });
       }}
       style={
-        currentConversation?._id === conversation._id
+        currentConversation?._id === conversationCopy?._id
           ? { backgroundColor: '#dfcfcf' }
           : null
       }
@@ -121,13 +154,14 @@ const Contact = ({ conversation }) => {
         </h5>
         <div className={classes.userInfoWrapperBottom}>
           <Typography className={classes.typography}>
-            {conversation?.messages.length > 0 &&
-              conversation?.messages[conversation?.messages.length - 1].text}
+            {conversationCopy?.messages.length > 0 &&
+              conversationCopy?.messages[conversationCopy?.messages.length - 1]
+                .text}
           </Typography>
         </div>
       </div>
       <div>
-        {currentConversation?._id !== conversation._id &&
+        {currentConversation?._id !== conversationCopy?._id &&
           newMessagesNumberRef.current > 0 && (
             <p>{newMessagesNumberRef.current}</p>
           )}

@@ -14,8 +14,8 @@ import Profile from './pages/Profile';
 import StripeContainer from './components/StripeContainer';
 import scriptLoader from 'react-async-script-loader';
 import Messages from './pages/Messages';
-import { io } from 'socket.io-client';
 import { Redirect } from 'react-router-dom';
+import { io } from 'socket.io-client';
 
 export const socket = io(`ws://localhost:3001`, {
   withCredentials: true,
@@ -24,7 +24,7 @@ export const socket = io(`ws://localhost:3001`, {
 
 const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
   // eslint-disable-next-line no-unused-vars
-  const [state, dispatch] = useStateValue();
+  const [{ user }, dispatch] = useStateValue();
   const history = useHistory();
 
   useEffect(() => {
@@ -58,32 +58,12 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
     });
   }, []);
 
-  // useEffect(() => {
-  //   const fetchConversations = async () => {
-  //     try {
-  //       await axios
-  //         .get('/conversations', { withCredentials: true })
-  //         .then((response) => {
-  //           //   setConversations(response.data);
-  //           console.log(response.data);
-  //           // dispatch({
-  //           //   type: 'SET_CONVERSATIONS',
-  //           //   payload: response.data,
-  //           // });
-  //         })
-  //         .catch((error) => console.log(error));
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   fetchConversations();
-  // }, []);
-
   if (isScriptLoaded && isScriptLoadSucceed) {
     return (
       <div className="app">
         <Switch>
           <Route path="/me" exact>
+            {/* {user === undefined || (user === null && <Redirect to="/login" />)} */}
             <Me />
           </Route>
           <Route path="/" exact>

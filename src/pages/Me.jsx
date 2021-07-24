@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useStateValue } from '../contextAPI/StateProvider';
 import { TextField, Button, Paper, Avatar } from '@material-ui/core';
 import { NavBar } from '../components';
@@ -84,7 +84,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Profile = () => {
+const Me = () => {
   const classes = useStyles();
   const [{ user }, dispatch] = useStateValue({});
   const [userObject, setUserObject] = useState({
@@ -96,15 +96,15 @@ const Profile = () => {
   });
   const [editing, setEditing] = useState(false);
 
+  const isAfterToday = (date) => {
+    return new Date(date).valueOf() > new Date().valueOf();
+  };
+
   const handleChange = (e) => {
     const name = e.target.name;
     setUserObject({ ...userObject, [name]: e.target.value });
     console.log(userObject);
   };
-
-  if (localStorage.getItem('loggedIn') !== 'true') {
-    return <Redirect to="login" />;
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -144,12 +144,21 @@ const Profile = () => {
     }
   };
 
+  useEffect(() => {
+    user.username === undefined ||
+      (user.username === null && <Redirect to="/login" />);
+    //eslint-disable-next-line
+  }, []);
+
   return (
     <>
       <NavBar />
       <div className={classes.container}>
         {!editing && (
           <Paper elevation={0} className={classes.paperStyle}>
+            {/* {!isAfterToday && (
+
+            )} */}
             <div className={classes.infoDiv}>
               <div className={classes.imageDiv}>
                 <Avatar
@@ -275,4 +284,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default Me;

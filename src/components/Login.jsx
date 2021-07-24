@@ -11,12 +11,36 @@ import {
   Link,
   Typography,
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import axios from '../axios';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+
+const useStyles = makeStyles((theme) => ({
+  gridStyle: {
+    width: '100%',
+    height: 'fit-content',
+  },
+  paperStyle: {
+    padding: '50px 20px',
+    width: '100%',
+    height: 'fit-content',
+    margin: '2px auto',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    [theme.breakpoints.down('xs')]: {
+      padding: 15,
+    },
+  },
+  headerStyle: { margin: '15px 0' },
+  avatarStyle: { backgroundColor: '#1bbd7e' },
+  btnStyle: { margin: '8px 0' },
+}));
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const classes = useStyles();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -38,34 +62,24 @@ const Login = () => {
     setPassword('');
   };
 
-  const paperStyle = {
-    padding: '30px 20px',
-    width: 300,
-    height: '50vh',
-    margin: '2px auto',
-  };
-
-  const avatarStyle = { backgroundColor: '#1bbd7e' };
-  const btnStyle = { margin: '8px 0' };
-
   return (
     <div className="login">
-      <Grid>
-        <Paper elevation={10} style={paperStyle}>
+      <Grid className={classes.gridStyle}>
+        <Paper elevation={0} className={classes.paperStyle}>
           <Grid
             container
             direction="column"
             justifyContent="center"
             alignItems="center"
           >
-            <Avatar style={avatarStyle}>
+            <Avatar className={classes.avatarStyle}>
               <LockOutlinedIcon />
             </Avatar>
-            <h2>Sign In</h2>
+            <h2 className={classes.headerStyle}>Sign In</h2>
           </Grid>
           <form onSubmit={handleLogin}>
             <TextField
-              style={btnStyle}
+              className={classes.btnStyle}
               fullWidth
               required
               label="Email"
@@ -75,7 +89,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
             />
             <TextField
-              style={btnStyle}
+              className={classes.btnStyle}
               fullWidth
               required
               label="Password"
@@ -89,7 +103,7 @@ const Login = () => {
               label="Remember me"
             />
             <Button
-              style={btnStyle}
+              className={classes.btnStyle}
               type="submit"
               color="primary"
               fullWidth
@@ -97,44 +111,12 @@ const Login = () => {
             >
               Sign in
             </Button>
+            <Typography>
+              <Link>Forgot password?</Link>
+            </Typography>
           </form>
-          <Typography>
-            <Link>Forgot password?</Link>
-          </Typography>
-
-          <Typography>
-            Do you have an account? <Link>Sign Up</Link>
-          </Typography>
         </Paper>
       </Grid>
-
-      {/* <div className="login__inputs">
-        <h2>Login</h2>
-        <form>
-          <div className="login__input">
-            <h5>Email</h5>
-            <input
-              type="email"
-              placeholder="Type your email here"
-              value={email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setEmail(e.target.value)
-              }
-            />
-          </div>
-
-          <div className="login__input">
-            <h5>Password</h5>
-            <input
-              type="password"
-              value={password}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setPassword(e.target.value)
-              }
-            />
-          </div>
-        </form>
-      </div> */}
     </div>
   );
 };

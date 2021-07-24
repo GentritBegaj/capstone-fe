@@ -1,16 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Register from '../components/Register';
 import Login from '../components/Login';
-import { Paper, Tabs, Tab, Typography, Box } from '@material-ui/core';
+import {
+  Paper,
+  Tabs,
+  Tab,
+  Typography,
+  Box,
+  makeStyles,
+} from '@material-ui/core';
+
+const useStyles = makeStyles((theme) => ({
+  paperStyle: {
+    width: '50vw',
+    maxWidth: 400,
+    margin: '20px auto',
+    height: 'fit-content',
+    maxHeight: '100vh',
+    overflowY: 'scroll',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    [theme.breakpoints.down('xs')]: {
+      width: '100vw',
+    },
+  },
+  tabs: {
+    display: 'flex',
+    justifyContent: 'center',
+    width: '100%',
+  },
+}));
 
 const LoginAndRegister = () => {
   const [value, setValue] = useState(0);
+  const classes = useStyles();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-
-  const paperStyle = { width: 340, margin: '20px auto' };
 
   const TabPanel = (props) => {
     const { children, value, index, ...other } = props;
@@ -33,12 +62,13 @@ const LoginAndRegister = () => {
   };
 
   return (
-    <Paper elevation={20} style={paperStyle}>
+    <Paper elevation={20} className={classes.paperStyle}>
       <Tabs
         value={value}
         indicatorColor="primary"
         textColor="primary"
         onChange={handleChange}
+        className={classes.tabs}
       >
         <Tab label="Log In" />
 

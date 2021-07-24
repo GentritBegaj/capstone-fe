@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Grid, Paper, Avatar, Button } from '@material-ui/core';
+import { Grid, Paper, Avatar, Button, Tooltip, Modal } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useStateValue } from '../contextAPI/StateProvider';
 import ForumIcon from '@material-ui/icons/Forum';
@@ -7,7 +7,9 @@ import { MdEventSeat } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-
+import BlockIcon from '@material-ui/icons/Block';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import ConfirmationNumberOutlinedIcon from '@material-ui/icons/ConfirmationNumberOutlined';
 import axios from '../axios';
 import { NavBar } from '../components';
 import moment from 'moment';
@@ -25,6 +27,11 @@ const useStyles = makeStyles((theme) => ({
   paperStyle: {
     width: '80vw',
     backgroundColor: '#fffefe',
+  },
+  moreIconWrapper: {
+    textAlign: 'right',
+    paddingTop: 10,
+    paddingRight: 10,
   },
   dateDiv: {
     display: 'flex',
@@ -143,7 +150,8 @@ const useStyles = makeStyles((theme) => ({
     padding: 20,
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    // alignItems: 'center',
+    flexDirection: 'column',
 
     [theme.breakpoints.down('sm')]: {
       flexDirection: 'column',
@@ -152,12 +160,42 @@ const useStyles = makeStyles((theme) => ({
   },
   cancelTicketsDiv: {
     display: 'flex',
-    flexDirection: 'column',
-    '& > input': { margin: '10px 0' },
-
-    [theme.breakpoints.down('sm')]: {
-      marginTop: 10,
-    },
+    margin: '10px 0',
+  },
+  ticketWrapper: {
+    position: 'relative',
+    marginRight: 10,
+  },
+  ticketRemoveWrapper: {
+    position: 'absolute',
+    left: 28,
+    top: -2,
+    width: 12,
+    height: 12,
+    border: '1px solid gray',
+    borderRadius: '50%',
+    cursor: 'pointer',
+  },
+  ticketRightLine: {
+    width: 10,
+    height: 1,
+    border: '1px solid gray',
+    transform: 'rotate(45deg)',
+    position: 'absolute',
+    top: 4,
+  },
+  ticketLeftLine: {
+    width: 10,
+    height: 1,
+    border: '1px solid gray',
+    transform: 'rotate(-45deg)',
+    position: 'absolute',
+    top: 4,
+  },
+  modalButtonsDiv: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    alignItems: 'center',
   },
 }));
 
@@ -166,7 +204,25 @@ const TripDetails = () => {
   const classes = useStyles();
   const [{ trip, user }, dispatch] = useStateValue();
   const history = useHistory();
-  const [refundedTickets, setRefundedTickets] = useState(null);
+  const [modalStyle] = useState(getModalStyle);
+  const [open, setOpen] = useState(false);
+  const [openRefundModal, setOpenRefundModal] = useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleOpenRefundModal = () => {
+    setOpenRefundModal(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleCloseRefundModal = () => {
+    setOpenRefundModal(false);
+  };
 
   useEffect(() => {
     const fetchTrip = async () => {
@@ -187,18 +243,21 @@ const TripDetails = () => {
   }, []);
 
   const cancelTicket = async (e) => {
-    e.preventDefault();
-
     try {
       await axios
-        .put(
-          `/trips/${trip._id}/refund`,
-          {
-            refundedTickets,
-          },
-          { withCredentials: true }
-        )
+        .put(`/trips/${trip._id}/refund`, {}, { withCredentials: true })
         .then(() => window.location.reload())
+        .catch((err) => console.log(err));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const cancelTrip = async () => {
+    try {
+      await axios
+        .put(`/trips/${trip._id}/cancel`, {}, { withCredentials: true })
+        .then(window.location.reload())
         .catch((err) => console.log(err));
     } catch (error) {
       console.log(error);
@@ -243,10 +302,50 @@ const TripDetails = () => {
     }
   };
 
-  console.log(trip);
+  function getModalStyle() {
+    return {
+      width: '50vw',
+      height: 'fit-content',
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      backgroundColor: 'white',
+      padding: '5',
+      border: 'none',
+      outline: 'none',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+    };
+  }
+
+  const body = (
+    <div style={modalStyle} className={classes.paper}>
+      <h3 style={{ textAlign: 'center' }}>
+        Are you sure you want to cancel trip?
+      </h3>
+      <div className={classes.modalButtonsDiv}>
+        <Button onClick={cancelTrip}>Yes</Button>
+        <Button onClick={handleClose}>No</Button>
+      </div>
+    </div>
+  );
+
+  const bodyRefundModal = (
+    <div style={modalStyle} className={classes.paper}>
+      <h3 style={{ textAlign: 'center' }}>
+        Are you sure you want to cancel ticket?
+      </h3>
+      <div className={classes.modalButtonsDiv}>
+        <Button onClick={cancelTicket}>Yes</Button>
+        <Button onClick={handleCloseRefundModal}>No</Button>
+      </div>
+    </div>
+  );
 
   return (
-    <>
+    <div>
       <NavBar />
       {trip?.owner && (
         <Grid
@@ -259,114 +358,143 @@ const TripDetails = () => {
           }
         >
           <Paper className={classes.paperStyle}>
-            <div className={classes.dateDiv}>
-              <h1>{moment(trip.departureDate).format('ddd, MMMM Do')}</h1>
-            </div>
-            <div className={classes.locationsDiv}>
-              <div className={classes.locationsDivLeft}>
-                <h4>{trip.departureTime}</h4>
-                <h4>{trip.arrivalTime}</h4>
-              </div>
-              <div className={classes.locationsDivCenter}>
-                <div className={classes.locationsDivCenterCircle}></div>
-                <div className={classes.locationsDivCenterLine}></div>
-                <div className={classes.locationsDivCenterCircle}></div>
-              </div>
-              <div className={classes.locationsDivRight}>
-                <h4>{trip.originCity}</h4>
-                <h4>{trip.destinationCity}</h4>
-              </div>
-            </div>
-            <div className={classes.priceDiv}>
-              <h3 style={{ color: '#c2a0a0', fontWeight: 500 }}>
-                Price per passenger
-              </h3>
-              <h3>${trip.pricePerPerson && trip.pricePerPerson.toFixed(2)}</h3>
-            </div>
-            <div
-              className={classes.userDiv}
-              onClick={() => {
-                user._id === trip.owner._id
-                  ? history.push('/me')
-                  : history.push(`/user/${trip.owner._id}`);
-              }}
-            >
-              <h3>
-                {trip?.owner &&
-                  trip.owner.username.charAt(0).toUpperCase() +
-                    trip.owner.username.slice(1)}
-              </h3>
-              <div style={{ display: 'flex', alignItems: 'center' }}>
-                <Avatar src={trip?.owner && trip.owner.profilePic} />
-                <ChevronRightIcon />
-              </div>
-            </div>
-            {trip?.description && (
-              <div className={classes.descriptionDiv}>
-                <p>{trip && trip.description}</p>
+            {trip.owner._id === user._id && trip?.cancelled === false && (
+              <div className={classes.moreIconWrapper}>
+                <Tooltip title="Cancel trip">
+                  <BlockIcon onClick={handleOpen} />
+                </Tooltip>
               </div>
             )}
-            {trip?.owner._id !== user._id && (
-              <div className={classes.contactDiv} onClick={startConversation}>
-                <p style={{ marginRight: 5 }}>
-                  Contact{' '}
+
+            {trip.owner._id === user._id && trip?.cancelled && (
+              <div className={classes.moreIconWrapper}>
+                <Tooltip title="Publish trip">
+                  <CheckCircleIcon onClick={cancelTrip} />
+                </Tooltip>
+              </div>
+            )}
+            {trip?.cancelled && (
+              <h1
+                style={{
+                  color: 'red',
+                  textAlign: 'center',
+                }}
+              >
+                Trip is currently cancelled
+              </h1>
+            )}
+            <div style={trip?.cancelled ? { opacity: 0.3 } : null}>
+              <div className={classes.dateDiv}>
+                <h1>{moment(trip.departureDate).format('ddd, MMMM Do')}</h1>
+              </div>
+              <div className={classes.locationsDiv}>
+                <div className={classes.locationsDivLeft}>
+                  <h4>{trip.departureTime}</h4>
+                  <h4>{trip.arrivalTime}</h4>
+                </div>
+                <div className={classes.locationsDivCenter}>
+                  <div className={classes.locationsDivCenterCircle}></div>
+                  <div className={classes.locationsDivCenterLine}></div>
+                  <div className={classes.locationsDivCenterCircle}></div>
+                </div>
+                <div className={classes.locationsDivRight}>
+                  <h4>{trip.originCity}</h4>
+                  <h4>{trip.destinationCity}</h4>
+                </div>
+              </div>
+              <div className={classes.priceDiv}>
+                <h3 style={{ color: '#c2a0a0', fontWeight: 500 }}>
+                  Price per passenger
+                </h3>
+                <h3>
+                  ${trip.pricePerPerson && trip.pricePerPerson.toFixed(2)}
+                </h3>
+              </div>
+              <div
+                className={classes.userDiv}
+                onClick={() => {
+                  user._id === trip.owner._id
+                    ? history.push('/me')
+                    : history.push(`/user/${trip.owner._id}`);
+                }}
+              >
+                <h3>
                   {trip?.owner &&
                     trip.owner.username.charAt(0).toUpperCase() +
                       trip.owner.username.slice(1)}
-                </p>
-                <ForumIcon />
-              </div>
-            )}
-            <div className={classes.seatsDiv}>
-              {trip?.seatsLeft !== undefined && (
-                <>
-                  <MdEventSeat className={classes.seat} />{' '}
-                  <p>{trip.seatsLeft} seats available</p>
-                </>
-              )}
-            </div>
-            {trip?.participants.filter(
-              (participant) => participant._id === user._id
-            ).length > 0 && (
-              <div className={classes.reservedTickets}>
-                <h4>
-                  You have{'  '}
-                  {
-                    trip.participants.find(
-                      (participant) => participant._id === user._id
-                    ).tickets
-                  }
-                  {'   '}
-                  reserved seats for this trip
-                </h4>
-
-                <div className={classes.cancelTicketsDiv}>
-                  <p>Set the number of tickets you would like to cancel</p>
-                  <form
-                    onSubmit={cancelTicket}
-                    className={classes.cancelTicketsDiv}
-                  >
-                    <input
-                      type="number"
-                      min={1}
-                      max={
-                        trip.participants.find(
-                          (participant) => participant._id === user._id
-                        ).tickets
-                      }
-                      value={refundedTickets}
-                      onChange={(e) => setRefundedTickets(e.target.value)}
-                    />
-                    <Button
-                      type="submit"
-                      style={{ backgroundColor: '#f11919', color: '#fff' }}
-                    >
-                      Cancel ticket(s)
-                    </Button>
-                  </form>
+                </h3>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Avatar src={trip?.owner && trip.owner.profilePic} />
+                  <ChevronRightIcon />
                 </div>
               </div>
-            )}
+              {trip?.description && (
+                <div className={classes.descriptionDiv}>
+                  <p>{trip && trip.description}</p>
+                </div>
+              )}
+              {trip?.owner._id !== user._id && (
+                <div className={classes.contactDiv} onClick={startConversation}>
+                  <p style={{ marginRight: 5 }}>
+                    Contact{' '}
+                    {trip?.owner &&
+                      trip.owner.username.charAt(0).toUpperCase() +
+                        trip.owner.username.slice(1)}
+                  </p>
+                  <ForumIcon />
+                </div>
+              )}
+              <div className={classes.seatsDiv}>
+                {trip?.seatsLeft !== undefined && (
+                  <>
+                    <MdEventSeat className={classes.seat} />{' '}
+                    <p>{trip.seatsLeft} seats available</p>
+                  </>
+                )}
+              </div>
+              {trip?.participants.filter(
+                (participant) => participant._id === user._id
+              ).length > 0 && (
+                <div className={classes.reservedTickets}>
+                  <h4>
+                    You have{'  '}
+                    {
+                      trip.participants.find(
+                        (participant) => participant._id === user._id
+                      ).tickets
+                    }
+                    {'   '}
+                    reserved seats for this trip
+                  </h4>
+                  {trip?.participants.find(
+                    (participant) => participant._id === user._id
+                  ).tickets > 0 && (
+                    <div className={classes.cancelTicketsDiv}>
+                      {[
+                        ...new Array(
+                          trip.participants.find(
+                            (participant) => participant._id === user._id
+                          ).tickets
+                        ),
+                      ].map((ticket) => (
+                        <div className={classes.ticketWrapper}>
+                          <Tooltip title="Cancel ticket" placement="top-right">
+                            <div
+                              onClick={() => handleOpenRefundModal()}
+                              className={classes.ticketRemoveWrapper}
+                            >
+                              <div className={classes.ticketLeftLine}></div>
+                              <div className={classes.ticketRightLine}></div>
+                            </div>
+                          </Tooltip>
+                          <ConfirmationNumberOutlinedIcon fontSize="large" />
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </Paper>
           {trip?.owner._id !== user._id && (
             <div className={classes.bottomDiv}>
@@ -380,7 +508,23 @@ const TripDetails = () => {
           )}
         </Grid>
       )}
-    </>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {body}
+      </Modal>
+      <Modal
+        open={openRefundModal}
+        onClose={handleCloseRefundModal}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {bodyRefundModal}
+      </Modal>
+    </div>
   );
 };
 

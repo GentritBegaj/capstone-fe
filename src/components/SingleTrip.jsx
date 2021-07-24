@@ -3,7 +3,6 @@ import { Paper, Avatar } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 import { useHistory } from 'react-router-dom';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useStateValue } from '../contextAPI/StateProvider';
 
 const useStyles = makeStyles((theme) => ({
@@ -18,10 +17,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     justifyContent: 'space-between',
     cursor: 'pointer',
-  },
-  moreIconWrapper: {
-    textAlign: 'right',
-    paddingBottom: 10,
   },
   topWrapper: {
     display: 'flex',
@@ -122,11 +117,6 @@ const SingleTrip = ({ trip }) => {
         className={classes.paperStyle}
         onClick={() => history.push(`/trip-details/${trip._id}`)}
       >
-        {trip.owner._id === user._id && (
-          <div className={classes.moreIconWrapper}>
-            <MoreHorizIcon />
-          </div>
-        )}
         <div className={classes.topWrapper}>
           <div className={classes.topLeft}>
             <div className={classes.topLeftText}>

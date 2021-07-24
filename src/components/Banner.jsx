@@ -14,23 +14,19 @@ const useStyles = makeStyles((theme) =>
     root: {
       width: '100%',
       height: 'calc(100vh - 64px)',
-      backgroundImage:
-        'url(https://i2.wp.com/www.theengineblock.com/wp-content/uploads/2019/09/ridesharing_future.png?w=800&ssl=1)',
+      backgroundImage: 'url(banner.png)',
       backgroundRepeat: 'no-repeat',
-      backgroundSize: 'cover',
+      backgroundSize: '100% 100%',
       display: 'flex',
-      alignItems: 'flex-end',
       justifyContent: 'center',
-      paddingBottom: 200,
 
       [theme.breakpoints.down('sm')]: {
         backgroundRepeat: 'no-repeat',
-        backgroundSize: 'cover',
+        backgroundSize: '100% 100%',
         display: 'flex',
-        alignItems: 'center',
+        // alignItems: 'center',
         justifyContent: 'center',
         height: 'calc(100vh - 56px)',
-        paddingBottom: 0,
       },
       [theme.breakpoints.down('xs')]: {
         height: 'calc(100vh - 48px)',
@@ -40,17 +36,21 @@ const useStyles = makeStyles((theme) =>
       height: 55,
       display: 'flex',
       alignItems: 'center',
-      backgroundColor: '#b7c5ce',
-      borderRadius: 10,
+      borderRadius: 20,
       position: 'relative',
       width: '70vw',
+      top: 100,
+      backgroundColor: '#d4b8b8',
+      opacity: 0.9,
+      padding: 10,
 
       [theme.breakpoints.down('sm')]: {
         flexDirection: 'column',
         minHeight: 250,
         height: '50vh',
         width: '75vw',
-        padding: 5,
+        backgroundColor: '#ffffff',
+        opacity: 0.9,
       },
     },
     input: {
@@ -58,10 +58,11 @@ const useStyles = makeStyles((theme) =>
       outline: 'none',
       width: '15vw',
       height: '100%',
+      backgroundColor: '#ccc5c50',
 
       [theme.breakpoints.down('sm')]: {
         width: '69vw',
-        padding: 0,
+        color: 'black',
       },
     },
     adornment: {
@@ -95,7 +96,9 @@ export const Banner = () => {
 
     const query = `/trips${from !== '' ? `?originCity='${from}'` : ''}${
       to !== '' ? `&destinationCity='${to}'` : ''
-    }${date !== '' ? `&departureDate=${date}` : ''}&seatsLeft=${seatsLeft}`;
+    }${
+      date !== '' ? `&departureDate=${date}` : ''
+    }&seatsLeft=${seatsLeft}&cancelled=false`;
     dispatch({
       type: 'SET_ORIGIN',
       payload: from,
@@ -267,9 +270,10 @@ export const Banner = () => {
           disabled={!(from !== '' && to !== '' && date !== '')}
           type="submit"
           style={{
-            backgroundColor: '#227cb8',
+            backgroundColor: '#3f98bb',
             color: '#fff',
             cursor: 'pointer',
+            borderRadius: '30px',
           }}
         >
           <SearchIcon />

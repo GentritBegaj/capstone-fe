@@ -232,21 +232,24 @@ const PaymentForm = () => {
                 setLoading(false);
                 setSuccess(true);
               })
-              .catch((err) => console.log(err));
+              .catch((err) => {
+                console.log(err);
+                setLoading(false);
+              });
           } catch (error) {
             console.log(error);
+            setLoading(false);
           }
         }
       } catch (error) {
         console.log(error);
+        setLoading(false);
       }
     } else {
       console.log(error);
+      setLoading(false);
     }
   };
-
-  console.log(trip);
-  console.log(typeof passengers);
 
   return (
     <>
@@ -275,8 +278,11 @@ const PaymentForm = () => {
         </>
       )}
       {loading && (
-        <Backdrop className={classes.backdrop} open={loading}>
+        <Backdrop open={loading}>
           <CircularProgress color="inherit" />
+          <p style={{ color: '#fff', marginRight: 10 }}>
+            Processing payment...
+          </p>
         </Backdrop>
       )}
       {success && (

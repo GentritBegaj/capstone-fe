@@ -302,7 +302,11 @@ export const AddTrip = () => {
                         nextStep();
                       }
                     }}
-                    style={{ marginLeft: 'auto', backgroundColor: '#0ab858eb' }}
+                    style={{
+                      marginLeft: 'auto',
+                      backgroundColor: '#3f98bb',
+                      color: '#fff',
+                    }}
                   >
                     Next
                   </Button>
@@ -576,7 +580,11 @@ export const AddTrip = () => {
                   variant="contained"
                   disabled={!isValid}
                   onClick={isValid && nextStep}
-                  style={{ marginLeft: 'auto', backgroundColor: '#0ab858eb' }}
+                  style={{
+                    marginLeft: 'auto',
+                    backgroundColor: '#3f98bb',
+                    color: '#fff',
+                  }}
                 >
                   Next
                 </Button>

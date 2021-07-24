@@ -8,20 +8,16 @@ const useStyles = makeStyles((theme) => ({
     margin: 10,
     padding: 3,
     width: 'fit-content',
-    maxWidth: '55%',
+    maxWidth: '75%',
     flexWrap: 'wrap',
   },
   paper: {
     backgroundColor: '#b6b1f1',
     padding: 5,
-    // minHeight: 40,
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-
-    // width: 'fit-content',
     minWidth: 40,
-    // fontSize: 14,
   },
   timeWrapper: {
     position: 'relative',

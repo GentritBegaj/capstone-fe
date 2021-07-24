@@ -27,7 +27,8 @@ const useStyles = makeStyles((theme) =>
       zIndex: 99,
     },
     appBar: {
-      backgroundColor: '#7f8cd1',
+      backgroundColor: '#ffffff',
+      color: '#3f98bb',
     },
     menuButton: {
       marginRight: theme.spacing(2),
@@ -69,6 +70,7 @@ export function NavBar() {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
+  const [navbar, setNavbar] = React.useState(false);
   const newMessagesRef = useRef();
 
   const handleLogout = async () => {
@@ -82,6 +84,16 @@ export function NavBar() {
         localStorage.setItem('loggedIn', 'false');
       });
   };
+
+  const handleNavbarShadow = () => {
+    if (window.scrollY >= 64) {
+      setNavbar(true);
+    } else {
+      setNavbar(false);
+    }
+  };
+
+  window.addEventListener('scroll', handleNavbarShadow);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -130,7 +142,7 @@ export function NavBar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={() => history.push('/find-trip')}>
+      <MenuItem onClick={() => history.push('/')}>
         <IconButton aria-label="Find a ride" color="inherit">
           <SearchIcon />
         </IconButton>
@@ -174,32 +186,25 @@ export function NavBar() {
 
   return (
     <div className={classes.grow}>
-      <AppBar position="static" className={classes.appBar}>
+      <AppBar
+        position="static"
+        className={classes.appBar}
+        elevation={navbar ? 1 : 0}
+      >
         <Toolbar style={{ padding: '0 40px' }}>
           <Typography className={classes.title} variant="h6" noWrap>
             <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-              RideShareApp
+              <img
+                src="https://res.cloudinary.com/dnh72jcdv/image/upload/v1627148739/logo_ctm8fc.png"
+                style={{ width: 40, height: 40, borderRadius: '50%' }}
+                alt="logo-img"
+              />
             </Link>
           </Typography>
 
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <div className={classes.links}>
-              <div className={classes.link}>
-                <Link
-                  to="/find-trip"
-                  style={{
-                    textDecoration: 'none',
-                    color: 'inherit',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <SearchIcon />
-                  {'    '}
-                  <p>Find a ride</p>
-                </Link>
-              </div>
               <div className={classes.link}>
                 <Link
                   to="/add-trip"
