@@ -274,11 +274,24 @@ const TripDetails = () => {
         conversation.members.find((member) => member._id === trip.owner._id)
       );
       if (existingConversation) {
-        dispatch({
-          type: 'SET_CURRENT_CONVERSATION',
-          payload: existingConversation,
-        });
-        history.push('/messages');
+        try {
+          await axios
+            .put(
+              `conversations/${existingConversation._id}/retrieveConversation`,
+              { receiverId: trip.owner._id },
+              { withCredentials: true }
+            )
+            .then((response) => {
+              dispatch({
+                type: 'SET_CURRENT_CONVERSATION',
+                payload: response.data,
+              });
+              history.push('/messages');
+            })
+            .catch((err) => console.log(err));
+        } catch (error) {
+          console.log(error);
+        }
       } else {
         try {
           const response = await axios.post(

@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { makeStyles, createStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Avatar from '@material-ui/core/Avatar';
@@ -14,9 +14,11 @@ import MailIcon from '@material-ui/icons/Mail';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import AddIcon from '@material-ui/icons/Add';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useStateValue } from '../contextAPI/StateProvider';
+import Divider from '@material-ui/core/Divider';
 import axios from '../axios';
+import { socket } from '../App';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -29,6 +31,7 @@ const useStyles = makeStyles((theme) =>
     appBar: {
       backgroundColor: '#ffffff',
       color: '#3f98bb',
+      position: 'relative',
     },
     menuButton: {
       marginRight: theme.spacing(2),
@@ -61,17 +64,48 @@ const useStyles = makeStyles((theme) =>
         display: 'none',
       },
     },
+    alert: {
+      padding: 10,
+      margin: theme.spacing(3, 0),
+      border: '1px solid',
+      position: 'absolute',
+      backgroundColor: '#0d8bdf',
+      color: '#fff',
+      width: 'fit-content',
+      fontSize: 15,
+      minWidth: 200,
+      top: 30,
+      right: 15,
+    },
+    notificationDiv: {
+      // borderBottom: '1px solid gray',
+      fontSize: 15,
+      width: 200,
+    },
+    notificationsText: {},
   })
 );
 
 export function NavBar() {
-  const [{ user }, dispatch] = useStateValue();
+  const [{ user, currentConversation }, dispatch] = useStateValue();
   const history = useHistory();
+  const location = useLocation();
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [navbar, setNavbar] = React.useState(false);
-  const newMessagesRef = useRef();
+  const [newMessagesArray, setNewMessagesArray] = useState([]);
+  const [newNotificationsArray, setNewNotificationsArray] = useState([]);
+  const [show, setShow] = useState(false);
+
+  const handleClick = () => {
+    if (show) {
+      setShow(false);
+      setNewNotificationsArray([]);
+    } else {
+      setShow(true);
+    }
+  };
 
   const handleLogout = async () => {
     await axios
@@ -85,8 +119,31 @@ export function NavBar() {
       });
   };
 
+  useEffect(() => {
+    socket.on('newMessage', (message) => {
+      setNewNotificationsArray((prevNotificationsArray) => [
+        ...prevNotificationsArray,
+        message,
+      ]);
+      if (location.pathname !== '/messages') {
+        setNewMessagesArray((prevNewMessagesArray) => [
+          ...prevNewMessagesArray,
+          message,
+        ]);
+      }
+    });
+    //eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    if (location.pathname === '/messages') {
+      setNewMessagesArray([]);
+    }
+    //eslint-disable-next-line
+  }, []);
+
   const handleNavbarShadow = () => {
-    if (window.scrollY >= 64) {
+    if (window.scrollY >= 10) {
       setNavbar(true);
     } else {
       setNavbar(false);
@@ -155,21 +212,56 @@ export function NavBar() {
         <p>Publish a ride</p>
       </MenuItem>
       <MenuItem onClick={() => window.location.replace('/messages')}>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          {/* <Badge badgeContent={4} color="secondary"> */}
-          <MailIcon />
-          {/* </Badge> */}
-        </IconButton>
-        <p>Messages</p>
-      </MenuItem>
-      <MenuItem>
         <IconButton aria-label="show 11 new notifications" color="inherit">
-          <Badge badgeContent={11} color="secondary">
-            <NotificationsIcon />
-          </Badge>
+          {newMessagesArray.length > 0 ? (
+            <Badge badgeContent={newMessagesArray.length} color="secondary">
+              <MailIcon />
+            </Badge>
+          ) : (
+            <MailIcon />
+          )}
+        </IconButton>
+        <p>Messages </p>
+      </MenuItem>
+      {/* <MenuItem onClick={handleClick}>
+        <IconButton aria-label="show 4 new mails" color="inherit">
+          <>
+            {newNotificationsArray.length > 0 ? (
+              <Badge
+                badgeContent={newNotificationsArray.length}
+                color="secondary"
+              >
+                <NotificationsIcon />
+              </Badge>
+            ) : (
+              <NotificationsIcon />
+            )}
+            {show ? (
+              <div className={classes.alert}>
+                {newNotificationsArray.length > 0 ? (
+                  newNotificationsArray.map((n) => (
+                    <div className={classes.notificationDiv}>
+                      <p
+                        onClick={() => {
+                          window.location.replace('/messages');
+                        }}
+                        className={classes.notificationsText}
+                      >
+                        {n.senderUsername.charAt(0).toUpperCase() +
+                          n.senderUsername.slice(1)}{' '}
+                        sent a new message
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p>No new notifications</p>
+                )}
+              </div>
+            ) : null}
+          </>
         </IconButton>
         <p>Notifications</p>
-      </MenuItem>
+      </MenuItem> */}
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           aria-label="account of current user"
@@ -185,83 +277,134 @@ export function NavBar() {
   );
 
   return (
-    <div className={classes.grow}>
-      <AppBar
-        position="static"
-        className={classes.appBar}
-        elevation={navbar ? 1 : 0}
-      >
-        <Toolbar style={{ padding: '0 40px' }}>
-          <Typography className={classes.title} variant="h6" noWrap>
-            <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-              <img
-                src="https://res.cloudinary.com/dnh72jcdv/image/upload/v1627148739/logo_ctm8fc.png"
-                style={{ width: 40, height: 40, borderRadius: '50%' }}
-                alt="logo-img"
-              />
-            </Link>
-          </Typography>
+    <>
+      <div className={classes.grow}>
+        <AppBar
+          position="static"
+          className={classes.appBar}
+          elevation={navbar ? 10 : 0}
+        >
+          <Toolbar style={{ padding: '0 40px' }}>
+            <Typography className={classes.title} variant="h6" noWrap>
+              <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <img
+                  src="https://res.cloudinary.com/dnh72jcdv/image/upload/v1627148739/logo_ctm8fc.png"
+                  style={{ width: 40, height: 40, borderRadius: '50%' }}
+                  alt="logo-img"
+                />
+              </Link>
+            </Typography>
 
-          <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
-            <div className={classes.links}>
-              <div className={classes.link}>
-                <Link
-                  to="/add-trip"
-                  style={{
-                    textDecoration: 'none',
-                    color: 'inherit',
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  <AddCircleOutlineIcon />
-                  {'    '}
-                  <p>Publish a ride</p>
-                </Link>
+            <div className={classes.grow} />
+            <div className={classes.sectionDesktop}>
+              <div className={classes.links}>
+                <div className={classes.link}>
+                  <Link
+                    to="/add-trip"
+                    style={{
+                      textDecoration: 'none',
+                      color: 'inherit',
+                      display: 'flex',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <AddCircleOutlineIcon />
+                    {'    '}
+                    <p>Publish a ride</p>
+                  </Link>
+                </div>
               </div>
-            </div>
+              <IconButton
+                color="inherit"
+                onClick={() => window.location.replace('/messages')}
+              >
+                {newMessagesArray.length > 0 ? (
+                  <Badge
+                    badgeContent={newMessagesArray.length}
+                    color="secondary"
+                  >
+                    <MailIcon />
+                  </Badge>
+                ) : (
+                  <MailIcon />
+                )}
+              </IconButton>
 
-            <IconButton
-              onClick={() => window.location.replace('/messages')}
-              aria-label="show 4 new mails"
-              color="inherit"
-            >
-              <Badge badgeContent={4} color="secondary">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton aria-label="show 17 new notifications" color="inherit">
-              <Badge badgeContent={17} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <Avatar src={user.profilePic} />
-            </IconButton>
-          </div>
-          <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-          </div>
-        </Toolbar>
-      </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
-    </div>
+              <IconButton
+                onClick={handleClick}
+                aria-label="show new notifications"
+                color="inherit"
+              >
+                <>
+                  {!show && newNotificationsArray.length > 0 ? (
+                    <Badge
+                      badgeContent={newNotificationsArray.length}
+                      color="secondary"
+                      onClick={handleClick}
+                    >
+                      <NotificationsIcon />
+                    </Badge>
+                  ) : (
+                    <NotificationsIcon />
+                  )}
+                  {show ? (
+                    <div className={classes.alert}>
+                      {newNotificationsArray.length > 0 ? (
+                        newNotificationsArray.map((n) => (
+                          <div className={classes.notificationDiv}>
+                            <p
+                              onClick={() => {
+                                window.location.replace('/messages');
+                              }}
+                              className={classes.notificationsText}
+                            >
+                              {n.senderUsername.charAt(0).toUpperCase() +
+                                n.senderUsername.slice(1)}{' '}
+                              sent a new message
+                            </p>
+                          </div>
+                        ))
+                      ) : (
+                        <p>No new notifications</p>
+                      )}
+                    </div>
+                  ) : null}
+                </>
+              </IconButton>
+
+              <IconButton
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <Avatar src={user.profilePic} />
+              </IconButton>
+            </div>
+            <div className={classes.sectionMobile}>
+              <IconButton
+                aria-label="show more"
+                aria-controls={mobileMenuId}
+                aria-haspopup="true"
+                onClick={handleMobileMenuOpen}
+                color="inherit"
+              >
+                {newMessagesArray.length > 0 ? (
+                  <Badge variant="dot" color="secondary">
+                    <MenuIcon />
+                  </Badge>
+                ) : (
+                  <MenuIcon />
+                )}
+              </IconButton>
+            </div>
+          </Toolbar>
+        </AppBar>
+        {renderMobileMenu}
+        {renderMenu}
+      </div>
+    </>
   );
 }

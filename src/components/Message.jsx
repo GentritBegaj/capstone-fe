@@ -2,6 +2,7 @@ import React from 'react';
 import { Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import moment from 'moment';
+import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,6 +30,26 @@ const useStyles = makeStyles((theme) => ({
     right: 0,
     fontSize: 9,
   },
+  image: {
+    width: 350,
+    height: 200,
+    [theme.breakpoints.down('md')]: {
+      marginBottom: 3,
+      width: 250,
+      height: 170,
+    },
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: 3,
+      height: 150,
+      width: 200,
+    },
+    [theme.breakpoints.down('xs')]: {
+      marginBottom: 3,
+      height: '100%',
+      width: '100%',
+      maxWidth: 180,
+    },
+  },
 }));
 
 const Message = ({ own, message }) => {
@@ -41,9 +62,28 @@ const Message = ({ own, message }) => {
         className={classes.paper}
         style={own ? { backgroundColor: '#ade66b6c' } : null}
       >
-        <Typography style={{ wordWrap: 'break-word' }}>
-          {message.text}
-        </Typography>
+        {/* {console.log(`https://www.google.com/maps/search/?api=1&query=${message.latitude}-${message.longitude}`);} */}
+        {message.picture && (
+          <a
+            href={
+              message.location
+                ? `http://maps.google.com?q=${message.latitude},${message.longitude}`
+                : ''
+            }
+            target="_blank"
+          >
+            <img
+              className={classes.image}
+              src={message.picture}
+              alt="message-img"
+            />
+          </a>
+        )}
+        {message.text !== '' && (
+          <Typography style={{ wordWrap: 'break-word' }}>
+            {message.text}
+          </Typography>
+        )}
         <div className={classes.timeWrapper}>
           <small className={classes.time}>
             {moment(message.createdAt).format('HH:mm')}

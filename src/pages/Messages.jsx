@@ -42,15 +42,21 @@ const Messages = () => {
     setLoadingMessages(true);
     try {
       await axios
-        .get('/conversations', { withCredentials: true })
+        .get('/conversations/filtered', { withCredentials: true })
         .then((response) => {
+          // console.log(response.data);
           setConversations(response.data);
           setLoadingMessages(false);
-          console.log(response.data);
-          if (currentConversation === null) {
+          if (currentConversation === null && response.data.length > 0) {
             dispatch({
               type: 'SET_CURRENT_CONVERSATION',
               payload: response.data[0],
+            });
+          }
+          if (response.data.length === 0) {
+            dispatch({
+              type: 'SET_CURRENT_CONVERSATION',
+              payload: null,
             });
           }
         })
@@ -97,7 +103,6 @@ const Messages = () => {
                   key={uniqid()}
                   conversations={conversations}
                   fetchConversations={fetchConversations}
-                  setConversations={setConversations}
                   loadingMessages={loadingMessages}
                 />
               ) : (

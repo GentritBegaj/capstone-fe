@@ -6,7 +6,7 @@ import axios from '../axios';
 import { useStateValue } from '../contextAPI/StateProvider';
 import { useSnackbar } from 'notistack';
 import { useHistory } from 'react-router-dom';
-
+import Divider from '@material-ui/core/Divider';
 import PlacesAutocomplete from 'react-places-autocomplete';
 
 const useStyles = makeStyles((theme) =>
@@ -39,15 +39,16 @@ const useStyles = makeStyles((theme) =>
       borderRadius: 20,
       position: 'relative',
       width: '70vw',
+      maxWidth: 1200,
       top: 100,
       backgroundColor: '#d4b8b8',
       opacity: 0.9,
       padding: 10,
 
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         flexDirection: 'column',
         minHeight: 250,
-        height: '50vh',
+        height: 'fit-content',
         width: '75vw',
         backgroundColor: '#ffffff',
         opacity: 0.9,
@@ -60,9 +61,10 @@ const useStyles = makeStyles((theme) =>
       height: '100%',
       backgroundColor: '#ccc5c50',
 
-      [theme.breakpoints.down('sm')]: {
+      [theme.breakpoints.down('md')]: {
         width: '69vw',
         color: 'black',
+        marginBottom: 5,
       },
     },
     adornment: {
@@ -73,10 +75,19 @@ const useStyles = makeStyles((theme) =>
     },
     suggestionsDiv: {
       position: 'absolute',
+      top: 57,
       zIndex: 200,
+      width: '30vw',
       height: 'fit-content',
       display: 'flex',
       flexDirection: 'column',
+      [theme.breakpoints.down('md')]: {
+        width: '69vw',
+        top: 'initial',
+      },
+    },
+    divider: {
+      margin: '0 5px',
     },
   })
 );
@@ -176,7 +187,7 @@ export const Banner = () => {
                 {suggestions.map((suggestion, i) => {
                   const style = suggestion.active
                     ? { backgroundColor: '#e04040', cursor: 'pointer' }
-                    : { backgroundColor: '#fff', cursor: 'pointer' };
+                    : { backgroundColor: '#d4b8b8', cursor: 'pointer' };
 
                   return (
                     <div
@@ -191,6 +202,7 @@ export const Banner = () => {
             </div>
           )}
         </PlacesAutocomplete>
+        <Divider orientation="vertical" flexItem className={classes.divider} />
 
         <PlacesAutocomplete
           value={to}
@@ -217,7 +229,7 @@ export const Banner = () => {
                 {suggestions.map((suggestion, i) => {
                   const style = suggestion.active
                     ? { backgroundColor: '#e04040', cursor: 'pointer' }
-                    : { backgroundColor: '#fff', cursor: 'pointer' };
+                    : { backgroundColor: '#d4b8b8', cursor: 'pointer' };
 
                   return (
                     <div
@@ -232,7 +244,7 @@ export const Banner = () => {
             </div>
           )}
         </PlacesAutocomplete>
-
+        <Divider orientation="vertical" flexItem className={classes.divider} />
         <TextField
           className={classes.input}
           label="When"
@@ -246,6 +258,7 @@ export const Banner = () => {
           }}
           onChange={(e) => setDate(e.target.value)}
         />
+        <Divider orientation="vertical" flexItem className={classes.divider} />
         <TextField
           className={classes.input}
           type="number"
