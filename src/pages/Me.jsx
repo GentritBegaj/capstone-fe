@@ -96,10 +96,6 @@ const Me = () => {
   });
   const [editing, setEditing] = useState(false);
 
-  const isAfterToday = (date) => {
-    return new Date(date).valueOf() > new Date().valueOf();
-  };
-
   const handleChange = (e) => {
     const name = e.target.name;
     setUserObject({ ...userObject, [name]: e.target.value });
@@ -149,6 +145,9 @@ const Me = () => {
       (user.username === null && <Redirect to="/login" />);
     //eslint-disable-next-line
   }, []);
+
+  let date = new Date();
+  date.setDate(date.getDate() - 1);
 
   return (
     <>
@@ -201,9 +200,11 @@ const Me = () => {
               <h3>Upcoming trips</h3>
               <br />
               {user?.trips &&
-                user.trips.map((trip) => (
-                  <SingleTrip trip={trip} key={trip._id} />
-                ))}
+                user.trips
+                  .filter(
+                    (trip) => new Date(trip.departureDate) > new Date(date)
+                  )
+                  .map((trip) => <SingleTrip trip={trip} key={trip._id} />)}
             </div>
           </Paper>
         )}

@@ -52,7 +52,7 @@ const Trips = () => {
 
   useEffect(() => {
     if (departure === '') {
-      history.push('/find-trip');
+      history.push('/');
     }
     // eslint-disable-next-line
   }, []);
@@ -85,8 +85,7 @@ const Trips = () => {
           </p>
         </Paper>
         <div className={classes.tripsDiv}>
-          {trips &&
-            trips.map((trip) => <SingleTrip trip={trip} key={trip._id} />)}
+          {trips && trips.map((trip) => <SingleTrip trip={trip} key={trip} />)}
         </div>
       </Grid>
     </div>

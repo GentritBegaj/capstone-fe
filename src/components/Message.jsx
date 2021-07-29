@@ -2,7 +2,7 @@ import React from 'react';
 import { Paper, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import moment from 'moment';
-import { Link } from 'react-router-dom';
+import ModalImage from 'react-modal-image';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,6 +50,10 @@ const useStyles = makeStyles((theme) => ({
       maxWidth: 180,
     },
   },
+  location: {
+    width: 100,
+    height: 60,
+  },
 }));
 
 const Message = ({ own, message }) => {
@@ -62,23 +66,29 @@ const Message = ({ own, message }) => {
         className={classes.paper}
         style={own ? { backgroundColor: '#ade66b6c' } : null}
       >
-        {/* {console.log(`https://www.google.com/maps/search/?api=1&query=${message.latitude}-${message.longitude}`);} */}
-        {message.picture && (
-          <a
-            href={
-              message.location
-                ? `http://maps.google.com?q=${message.latitude},${message.longitude}`
-                : ''
-            }
-            target="_blank"
-          >
-            <img
+        {message?.picture &&
+          (message.location ? (
+            // eslint-disable-next-line react/jsx-no-target-blank
+            <a
+              href={`http://maps.google.com?q=${message.latitude},${message.longitude}`}
+              target="_blank"
+            >
+              <img
+                className={classes.location}
+                src={message.picture}
+                alt="message-img"
+              />
+            </a>
+          ) : (
+            <ModalImage
+              small={message.picture}
               className={classes.image}
-              src={message.picture}
+              large={message.picture}
               alt="message-img"
+              hideZoom="false"
+              hideDownload="false"
             />
-          </a>
-        )}
+          ))}
         {message.text !== '' && (
           <Typography style={{ wordWrap: 'break-word' }}>
             {message.text}

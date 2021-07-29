@@ -14,6 +14,7 @@ import { useForm } from 'react-hook-form';
 import axios from '../axios';
 import { useSnackbar } from 'notistack';
 import PlacesAutocomplete from 'react-places-autocomplete';
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
   mainGrid: {
@@ -90,6 +91,9 @@ const useStyles = makeStyles((theme) => ({
 export const AddTrip = () => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
+
+  const localTime = new Date();
+  const maxDate = moment(localTime).format('YYYY-MM-DD');
 
   const {
     register,
@@ -326,6 +330,7 @@ export const AddTrip = () => {
                     label="Departure date of trip?"
                     type="date"
                     className={classes.textInput}
+                    inputProps={{ min: `${maxDate}`, max: '' }}
                     InputLabelProps={{
                       shrink: true,
                     }}
@@ -343,6 +348,7 @@ export const AddTrip = () => {
                     label="Arrival date of trip?"
                     type="date"
                     className={classes.textInput}
+                    inputProps={{ min: `${maxDate}`, max: '' }}
                     InputLabelProps={{
                       shrink: true,
                     }}

@@ -197,6 +197,20 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-around',
     alignItems: 'center',
   },
+  participants: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '5px 20px',
+    borderBottom: '10px solid #f0e9e9',
+  },
+  participantsRight: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    cursor: 'pointer',
+  },
 }));
 
 const TripDetails = () => {
@@ -423,24 +437,39 @@ const TripDetails = () => {
                   ${trip.pricePerPerson && trip.pricePerPerson.toFixed(2)}
                 </h3>
               </div>
-              <div
-                className={classes.userDiv}
-                onClick={() => {
-                  user._id === trip.owner._id
-                    ? history.push('/me')
-                    : history.push(`/user/${trip.owner._id}`);
-                }}
-              >
-                <h3>
-                  {trip?.owner &&
-                    trip.owner.username.charAt(0).toUpperCase() +
-                      trip.owner.username.slice(1)}
-                </h3>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <Avatar src={trip?.owner && trip.owner.profilePic} />
-                  <ChevronRightIcon />
+              {trip?.owner._id === user._id &&
+                trip?.participants.length > 0 &&
+                trip?.participants.map((p) => (
+                  <div className={classes.participants}>
+                    <h5>Confirmed participants:</h5>
+                    <div
+                      className={classes.participantsRight}
+                      onClick={() => history.push(`/user/${p._id._id}`)}
+                    >
+                      <Avatar src={p._id.profilePic} />
+                      <small>
+                        {p?._id.username?.charAt(0).toUpperCase() +
+                          p?._id.username?.slice(1)}
+                      </small>
+                    </div>
+                  </div>
+                ))}
+              {trip.owner._id !== user._id && (
+                <div
+                  className={classes.userDiv}
+                  onClick={() => history.push(`/user/${trip.owner._id}`)}
+                >
+                  <h3>
+                    {trip?.owner &&
+                      trip.owner.username.charAt(0).toUpperCase() +
+                        trip.owner.username.slice(1)}
+                  </h3>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Avatar src={trip?.owner && trip.owner.profilePic} />
+                    <ChevronRightIcon />
+                  </div>
                 </div>
-              </div>
+              )}
               {trip?.description && (
                 <div className={classes.descriptionDiv}>
                   <p>{trip && trip.description}</p>

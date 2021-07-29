@@ -128,10 +128,11 @@ const Contact = ({ conversation }) => {
   return (
     <div
       onClick={() => {
-        dispatch({
-          type: 'SET_CURRENT_CONVERSATION',
-          payload: conversation,
-        });
+        currentConversation._id !== conversation._id &&
+          dispatch({
+            type: 'SET_CURRENT_CONVERSATION',
+            payload: conversation,
+          });
       }}
       style={
         currentConversation?._id === conversationCopy?._id

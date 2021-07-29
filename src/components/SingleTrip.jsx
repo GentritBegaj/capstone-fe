@@ -17,6 +17,19 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     justifyContent: 'space-between',
     cursor: 'pointer',
+    position: 'relative',
+
+    '&:hover': { backgroundColor: '#e2dfdf' },
+  },
+  cancelledHeading: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(' - (50 % ' ,') - (50 % ')'),
+
+    [theme.breakpoints.down('xs')]: {
+      left: '30%',
+    },
   },
   topWrapper: {
     display: 'flex',
@@ -101,22 +114,33 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '10px',
     marginRight: '2px',
   },
+  participants: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    margin: '25px 0',
+    padding: '10px 0',
+    borderTop: '1px solid gray',
+    borderBottom: '1px solid gray',
+  },
 }));
 
 const SingleTrip = ({ trip }) => {
   const history = useHistory();
-  // const location = useLocation();
   const classes = useStyles();
   // eslint-disable-next-line no-unused-vars
   const [{ user }, dispatch] = useStateValue();
-
   return (
     <>
       <Paper
         elevation={5}
         className={classes.paperStyle}
+        style={trip.cancelled ? { opacity: 0.4 } : null}
         onClick={() => history.push(`/trip-details/${trip._id}`)}
       >
+        {trip.cancelled && (
+          <h3 className={classes.cancelledHeading}>Cancelled</h3>
+        )}
         <div className={classes.topWrapper}>
           <div className={classes.topLeft}>
             <div className={classes.topLeftText}>
@@ -139,12 +163,26 @@ const SingleTrip = ({ trip }) => {
             </div>
           </Tooltip>
         </div>
+        {trip?.owner._id === user._id &&
+          trip?.participants.length > 0 &&
+          trip?.participants.map((p) => (
+            <div className={classes.participants}>
+              <h5>Confirmed participants:</h5>
+              <div>
+                <Avatar src={p._id.profilePic} />
+                <small>
+                  {p?._id?.username?.charAt(0).toUpperCase() +
+                    p?._id?.username?.slice(1)}
+                </small>
+              </div>
+            </div>
+          ))}
         <div className={classes.bottomWrapper}>
           <div className={classes.bottomLeft}>
             <Avatar src={trip.owner.profilePic} />
             <div className={classes.driverInfo}>
               <p>
-                {trip.owner.username &&
+                {trip?.owner.username &&
                   trip.owner.username.charAt(0).toUpperCase() +
                     trip.owner.username.slice(1)}
               </p>
@@ -153,6 +191,7 @@ const SingleTrip = ({ trip }) => {
               </p>
             </div>
           </div>
+
           <div className={classes.bottomRight}>
             <Tooltip
               title={

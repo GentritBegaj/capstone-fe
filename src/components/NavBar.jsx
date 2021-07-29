@@ -16,7 +16,6 @@ import AddIcon from '@material-ui/icons/Add';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useStateValue } from '../contextAPI/StateProvider';
-import Divider from '@material-ui/core/Divider';
 import axios from '../axios';
 import { socket } from '../App';
 

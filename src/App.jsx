@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import './App.css';
 import { Route, Switch, useHistory } from 'react-router-dom';
-import Home from './pages/Home';
 import LoginAndRegister from './pages/LoginAndRegister';
 import Trips from './pages/Trips';
 import axios from './axios';
@@ -16,6 +15,7 @@ import scriptLoader from 'react-async-script-loader';
 import Messages from './pages/Messages';
 import { Redirect } from 'react-router-dom';
 import { io } from 'socket.io-client';
+import { Banner } from './components/Banner';
 
 export const socket = io(`ws://localhost:3001`, {
   withCredentials: true,
@@ -44,7 +44,6 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
         console.log(error);
       }
     };
-    // fetchUser();
 
     localStorage.getItem('loggedIn') !== 'true'
       ? history.push('/login')
@@ -67,7 +66,7 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
             <Me />
           </Route>
           <Route path="/" exact>
-            <Home />
+            <Banner />
           </Route>
           <Route path="/find-trip" exact>
             <FindTrip />

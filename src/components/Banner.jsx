@@ -8,6 +8,8 @@ import { useSnackbar } from 'notistack';
 import { useHistory } from 'react-router-dom';
 import Divider from '@material-ui/core/Divider';
 import PlacesAutocomplete from 'react-places-autocomplete';
+import { NavBar } from './NavBar';
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -102,6 +104,9 @@ export const Banner = () => {
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
 
+  const localTime = new Date();
+  const maxDate = moment(localTime).format('YYYY-MM-DD');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -160,138 +165,157 @@ export const Banner = () => {
   };
 
   return (
-    <div className={classes.root}>
-      <form className={classes.form} onSubmit={handleSubmit}>
-        <PlacesAutocomplete
-          value={from}
-          onChange={(e) => setFrom(e)}
-          onSelect={(e) => setFrom(e)}
-        >
-          {({
-            getInputProps,
-            suggestions,
-            getSuggestionItemProps,
-            loading,
-          }) => (
-            <div>
-              <TextField
-                className={classes.input}
-                type="text"
-                InputProps={{ disableUnderline: true }}
-                {...getInputProps({
-                  label: 'From',
-                })}
-              />
-              <div className={classes.suggestionsDiv}>
-                {loading && <div>Loading...</div>}
-                {suggestions.map((suggestion, i) => {
-                  const style = suggestion.active
-                    ? { backgroundColor: '#e04040', cursor: 'pointer' }
-                    : { backgroundColor: '#d4b8b8', cursor: 'pointer' };
+    <>
+      <NavBar />
+      <div className={classes.root}>
+        <form className={classes.form} onSubmit={handleSubmit}>
+          <PlacesAutocomplete
+            value={from}
+            onChange={(e) => setFrom(e)}
+            onSelect={(e) => setFrom(e)}
+          >
+            {({
+              getInputProps,
+              suggestions,
+              getSuggestionItemProps,
+              loading,
+            }) => (
+              <div>
+                <TextField
+                  className={classes.input}
+                  type="text"
+                  InputProps={{ disableUnderline: true }}
+                  {...getInputProps({
+                    label: 'From',
+                  })}
+                />
+                <div className={classes.suggestionsDiv}>
+                  {loading && <div>Loading...</div>}
+                  {suggestions.map((suggestion, i) => {
+                    const style = suggestion.active
+                      ? { backgroundColor: '#e04040', cursor: 'pointer' }
+                      : { backgroundColor: '#d4b8b8', cursor: 'pointer' };
 
-                  return (
-                    <div
-                      key={i}
-                      {...getSuggestionItemProps(suggestion, { style })}
-                    >
-                      {suggestion.description}
-                    </div>
-                  );
-                })}
+                    return (
+                      <div
+                        key={i}
+                        {...getSuggestionItemProps(suggestion, { style })}
+                      >
+                        {suggestion.description}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          )}
-        </PlacesAutocomplete>
-        <Divider orientation="vertical" flexItem className={classes.divider} />
+            )}
+          </PlacesAutocomplete>
+          <Divider
+            orientation="vertical"
+            flexItem
+            className={classes.divider}
+          />
 
-        <PlacesAutocomplete
-          value={to}
-          onChange={(e) => setTo(e)}
-          onSelect={(e) => setTo(e)}
-        >
-          {({
-            getInputProps,
-            suggestions,
-            getSuggestionItemProps,
-            loading,
-          }) => (
-            <div>
-              <TextField
-                className={classes.input}
-                type="text"
-                InputProps={{ disableUnderline: true }}
-                {...getInputProps({
-                  label: 'To',
-                })}
-              />
-              <div className={classes.suggestionsDiv}>
-                {loading && <div>Loading...</div>}
-                {suggestions.map((suggestion, i) => {
-                  const style = suggestion.active
-                    ? { backgroundColor: '#e04040', cursor: 'pointer' }
-                    : { backgroundColor: '#d4b8b8', cursor: 'pointer' };
+          <PlacesAutocomplete
+            value={to}
+            onChange={(e) => setTo(e)}
+            onSelect={(e) => setTo(e)}
+          >
+            {({
+              getInputProps,
+              suggestions,
+              getSuggestionItemProps,
+              loading,
+            }) => (
+              <div>
+                <TextField
+                  className={classes.input}
+                  type="text"
+                  InputProps={{ disableUnderline: true }}
+                  {...getInputProps({
+                    label: 'To',
+                  })}
+                />
+                <div className={classes.suggestionsDiv}>
+                  {loading && <div>Loading...</div>}
+                  {suggestions.map((suggestion, i) => {
+                    const style = suggestion.active
+                      ? { backgroundColor: '#e04040', cursor: 'pointer' }
+                      : { backgroundColor: '#d4b8b8', cursor: 'pointer' };
 
-                  return (
-                    <div
-                      key={22222 + i}
-                      {...getSuggestionItemProps(suggestion, { style })}
-                    >
-                      {suggestion.description}
-                    </div>
-                  );
-                })}
+                    return (
+                      <div
+                        key={22222 + i}
+                        {...getSuggestionItemProps(suggestion, { style })}
+                      >
+                        {suggestion.description}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          )}
-        </PlacesAutocomplete>
-        <Divider orientation="vertical" flexItem className={classes.divider} />
-        <TextField
-          className={classes.input}
-          label="When"
-          type="date"
-          value={date}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment className={classes.adornment} position="start" />
-            ),
-            disableUnderline: true,
-          }}
-          onChange={(e) => setDate(e.target.value)}
-        />
-        <Divider orientation="vertical" flexItem className={classes.divider} />
-        <TextField
-          className={classes.input}
-          type="number"
-          inputProps={{ min: 1, max: 4 }}
-          InputProps={{
-            disableUnderline: true,
-            startAdornment: (
-              <InputAdornment
-                className={classes.adornmentPassenger}
-                position="start"
-              >
-                Passengers:
-              </InputAdornment>
-            ),
-          }}
-          label="# of passengers"
-          value={seatsLeft}
-          onChange={(e) => setSeatsLeft(e.target.value)}
-        />
-        <button
-          className={classes.input}
-          disabled={!(from !== '' && to !== '' && date !== '')}
-          type="submit"
-          style={{
-            backgroundColor: '#3f98bb',
-            color: '#fff',
-            cursor: 'pointer',
-            borderRadius: '30px',
-          }}
-        >
-          <SearchIcon />
-        </button>
-      </form>
-    </div>
+            )}
+          </PlacesAutocomplete>
+          <Divider
+            orientation="vertical"
+            flexItem
+            className={classes.divider}
+          />
+          <TextField
+            className={classes.input}
+            label="When"
+            type="date"
+            value={date}
+            InputProps={{
+              inputProps: { min: `${maxDate}`, max: '' },
+              startAdornment: (
+                <InputAdornment
+                  className={classes.adornment}
+                  position="start"
+                />
+              ),
+              disableUnderline: true,
+            }}
+            onChange={(e) => setDate(e.target.value)}
+          />
+          <Divider
+            orientation="vertical"
+            flexItem
+            className={classes.divider}
+          />
+          <TextField
+            className={classes.input}
+            type="number"
+            inputProps={{ min: 1, max: 4 }}
+            InputProps={{
+              disableUnderline: true,
+              startAdornment: (
+                <InputAdornment
+                  className={classes.adornmentPassenger}
+                  position="start"
+                >
+                  Passengers:
+                </InputAdornment>
+              ),
+            }}
+            label="# of passengers"
+            value={seatsLeft}
+            onChange={(e) => setSeatsLeft(e.target.value)}
+          />
+          <button
+            className={classes.input}
+            disabled={!(from !== '' && to !== '' && date !== '')}
+            type="submit"
+            style={{
+              backgroundColor: '#3f98bb',
+              color: '#fff',
+              cursor: 'pointer',
+              borderRadius: '30px',
+            }}
+          >
+            <SearchIcon />
+          </button>
+        </form>
+      </div>
+    </>
   );
 };

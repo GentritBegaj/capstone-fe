@@ -3,9 +3,11 @@ import { Paper, Avatar } from '@material-ui/core';
 import { NavBar } from '../components';
 import { makeStyles } from '@material-ui/core/styles';
 import SmsOutlinedIcon from '@material-ui/icons/SmsOutlined';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import axios from '../axios';
 import moment from 'moment';
+import ForumIcon from '@material-ui/icons/Forum';
+import { useStateValue } from '../contextAPI/StateProvider.js';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -75,12 +77,23 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
   },
+  contactDiv: {
+    width: 'fit-content',
+    fontSize: 20,
+    color: '#958de2',
+    display: 'flex',
+    alignItems: 'center',
+    cursor: 'pointer',
+  },
 }));
 
 const Profile = () => {
   const classes = useStyles();
   const { id } = useParams();
   const [user, setUser] = useState();
+  const history = useHistory();
+  // eslint-disable-next-line no-unused-vars
+  const [state, dispatch] = useStateValue();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -99,6 +112,57 @@ const Profile = () => {
     fetchUser();
     // eslint-disable-next-line
   }, []);
+
+  const startConversation = async () => {
+    try {
+      const response = await axios.get('/conversations', {
+        withCredentials: true,
+      });
+      const conversations = response.data;
+      const existingConversation = conversations.find((conversation) =>
+        conversation.members.find((member) => member._id === user._id)
+      );
+      if (existingConversation) {
+        try {
+          await axios
+            .put(
+              `conversations/${existingConversation._id}/retrieveConversation`,
+              { receiverId: user._id },
+              { withCredentials: true }
+            )
+            .then((response) => {
+              dispatch({
+                type: 'SET_CURRENT_CONVERSATION',
+                payload: response.data,
+              });
+              history.push('/messages');
+            })
+            .catch((err) => console.log(err));
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        try {
+          const response = await axios.post(
+            '/conversations',
+            {
+              receiverId: user._id,
+            },
+            { withCredentials: true }
+          );
+          dispatch({
+            type: 'SET_CURRENT_CONVERSATION',
+            payload: response.data,
+          });
+          history.push('/messages');
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -138,6 +202,15 @@ const Profile = () => {
             </div>
             <div className={classes.tripsDiv}>
               Member since {moment(user.createdAt).format(' MMMM Do YYYY')}
+            </div>
+            <div className={classes.contactDiv} onClick={startConversation}>
+              <p style={{ marginRight: 5 }}>
+                Contact{' '}
+                {user &&
+                  user?.username.charAt(0).toUpperCase() +
+                    user?.username.slice(1)}
+              </p>
+              <ForumIcon />
             </div>
           </Paper>
         )}
