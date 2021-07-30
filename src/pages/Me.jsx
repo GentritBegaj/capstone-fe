@@ -8,7 +8,8 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import axios from '../axios';
 import moment from 'moment';
 import SingleTrip from '../components/SingleTrip';
-import { Redirect } from 'react-router-dom';
+import { Redirect, useHistory } from 'react-router-dom';
+import ReactStars from 'react-rating-stars-component';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -82,6 +83,16 @@ const useStyles = makeStyles((theme) => ({
   upcomingTripsDiv: {
     textAlign: 'center',
   },
+  reviewDivWrapper: {
+    margin: '10px 0',
+  },
+  reviewInfoWrapper: {
+    margin: '10px 0',
+    display: 'flex',
+  },
+  reviewTextWrapper: {
+    marginLeft: 5,
+  },
 }));
 
 const Me = () => {
@@ -95,6 +106,7 @@ const Me = () => {
     profilePic: '',
   });
   const [editing, setEditing] = useState(false);
+  const history = useHistory();
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -196,16 +208,52 @@ const Me = () => {
             <div className={classes.tripsDiv}>
               Member since {moment(user.createdAt).format(' MMMM Do YYYY')}
             </div>
-            <div className={classes.upcomingTripsDiv}>
-              <h3>Upcoming trips</h3>
-              <br />
-              {user?.trips &&
-                user.trips
+            {user?.trips?.filter(
+              (trip) => new Date(trip.departureDate) > new Date(date)
+            ).length > 0 && (
+              <div className={classes.upcomingTripsDiv}>
+                <h3>Upcoming trips</h3>
+                <br />
+                {user.trips
                   .filter(
                     (trip) => new Date(trip.departureDate) > new Date(date)
                   )
-                  .map((trip) => <SingleTrip trip={trip} key={trip._id} />)}
-            </div>
+                  .map((trip) => (
+                    <SingleTrip trip={trip} key={trip._id} />
+                  ))}
+              </div>
+            )}
+            {user?.reviews?.map((review) => (
+              <div className={classes.reviewDivWrapper} key={review._id}>
+                <h5>Reviews</h5>
+                <div className={classes.reviewInfoWrapper}>
+                  <div
+                    onClick={() =>
+                      history.push(
+                        review.user._id !== user._id
+                          ? `/user/${review.user._id}`
+                          : null
+                      )
+                    }
+                  >
+                    <Avatar
+                      src={review.user.profilePic}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </div>
+                  <div className={classes.reviewTextWrapper}>
+                    <p>{review.text || ''}</p>
+                    <ReactStars
+                      count={5}
+                      value={review.rating}
+                      size={18}
+                      edit={false}
+                      activeColor="#ffd700"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
           </Paper>
         )}
         {editing && (

@@ -12,6 +12,7 @@ import { Modal } from '@material-ui/core';
 import { Button } from '@material-ui/core';
 import PersonPinCircleIcon from '@material-ui/icons/PersonPinCircle';
 import ImageIcon from '@material-ui/icons/Image';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -79,6 +80,7 @@ const Chat = ({ conversations, loadingMessages, fetchConversations }) => {
   const [messages, setMessages] = useState([]);
   const [modalStyle] = useState(getModalStyle);
   const [open, setOpen] = useState(false);
+  const history = useHistory();
   const scrollRef = useRef();
 
   const handleOpen = () => {
@@ -162,7 +164,6 @@ const Chat = ({ conversations, loadingMessages, fetchConversations }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(file);
     try {
       if (input !== '' && file === '') {
         await axios
@@ -215,6 +216,7 @@ const Chat = ({ conversations, loadingMessages, fetchConversations }) => {
             setMessages((prevMessages) => [...prevMessages, messageToDisplay]);
             socket.emit('sendMessage', messageToDisplay);
             setInput('');
+            setFile('');
           })
           .catch((err) => console.log(err));
       }
@@ -277,7 +279,11 @@ const Chat = ({ conversations, loadingMessages, fetchConversations }) => {
       <div className={classes.root}>
         <div className={classes.userInfoWrapper}>
           <div className={classes.userInfoRight}>
-            <Avatar src={getReceiver()?.profilePic} />
+            <Avatar
+              src={getReceiver()?.profilePic}
+              style={{ cursor: 'pointer' }}
+              onClick={() => history.push(`/user/${getReceiver()._id}`)}
+            />
             <div className={classes.userInfoRightUsername}>
               <p>
                 {getReceiver()?.username.charAt(0).toUpperCase() +

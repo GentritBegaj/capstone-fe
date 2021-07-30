@@ -238,20 +238,21 @@ const TripDetails = () => {
     setOpenRefundModal(false);
   };
 
+  const fetchTrip = async () => {
+    try {
+      await axios
+        .get(`/trips/${id}`)
+        .then((response) => {
+          dispatch({
+            type: 'SET_TRIP',
+            payload: response.data,
+          });
+        })
+        .catch((err) => console.log(err));
+    } catch (error) {}
+  };
+
   useEffect(() => {
-    const fetchTrip = async () => {
-      try {
-        await axios
-          .get(`/trips/${id}`)
-          .then((response) => {
-            dispatch({
-              type: 'SET_TRIP',
-              payload: response.data,
-            });
-          })
-          .catch((err) => console.log(err));
-      } catch (error) {}
-    };
     fetchTrip();
     // eslint-disable-next-line
   }, []);
@@ -271,7 +272,10 @@ const TripDetails = () => {
     try {
       await axios
         .put(`/trips/${trip._id}/cancel`, {}, { withCredentials: true })
-        .then(window.location.reload())
+        .then(() => {
+          fetchTrip();
+          handleClose();
+        })
         .catch((err) => console.log(err));
     } catch (error) {
       console.log(error);
@@ -348,7 +352,7 @@ const TripDetails = () => {
   }
 
   const body = (
-    <div style={modalStyle} className={classes.paper}>
+    <div style={modalStyle}>
       <h3 style={{ textAlign: 'center' }}>
         Are you sure you want to cancel trip?
       </h3>
@@ -360,7 +364,7 @@ const TripDetails = () => {
   );
 
   const bodyRefundModal = (
-    <div style={modalStyle} className={classes.paper}>
+    <div style={modalStyle}>
       <h3 style={{ textAlign: 'center' }}>
         Are you sure you want to cancel ticket?
       </h3>
@@ -370,6 +374,8 @@ const TripDetails = () => {
       </div>
     </div>
   );
+
+  console.log(trip);
 
   return (
     <div>
@@ -495,27 +501,27 @@ const TripDetails = () => {
                 )}
               </div>
               {trip?.participants.filter(
-                (participant) => participant._id === user._id
+                (participant) => participant._id._id === user._id
               ).length > 0 && (
                 <div className={classes.reservedTickets}>
                   <h4>
                     You have{'  '}
                     {
                       trip.participants.find(
-                        (participant) => participant._id === user._id
+                        (participant) => participant._id._id === user._id
                       ).tickets
                     }
                     {'   '}
                     reserved seats for this trip
                   </h4>
                   {trip?.participants.find(
-                    (participant) => participant._id === user._id
+                    (participant) => participant._id._id === user._id
                   ).tickets > 0 && (
                     <div className={classes.cancelTicketsDiv}>
                       {[
                         ...new Array(
                           trip.participants.find(
-                            (participant) => participant._id === user._id
+                            (participant) => participant._id._id === user._id
                           ).tickets
                         ),
                       ].map((ticket) => (

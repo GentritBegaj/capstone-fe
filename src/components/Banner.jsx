@@ -94,8 +94,7 @@ const useStyles = makeStyles((theme) =>
   })
 );
 export const Banner = () => {
-  // eslint-disable-next-line no-unused-vars
-  const [state, dispatch] = useStateValue();
+  const [, dispatch] = useStateValue();
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [date, setDate] = useState('');
@@ -266,7 +265,11 @@ export const Banner = () => {
             type="date"
             value={date}
             InputProps={{
-              inputProps: { min: `${maxDate}`, max: '' },
+              inputProps: {
+                min: `${maxDate}`,
+                max: '',
+                label: 'Date',
+              },
               startAdornment: (
                 <InputAdornment
                   className={classes.adornment}

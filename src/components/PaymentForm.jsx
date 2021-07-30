@@ -6,6 +6,7 @@ import { NavBar } from './NavBar';
 import { useStateValue } from '../contextAPI/StateProvider';
 import { Grid, Paper } from '@material-ui/core';
 import moment from 'moment';
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -196,6 +197,7 @@ const PaymentForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -235,19 +237,34 @@ const PaymentForm = () => {
               .catch((err) => {
                 console.log(err);
                 setLoading(false);
+                enqueueSnackbar(err.message, {
+                  autoHideDuration: 2000,
+                  anchorOrigin: { horizontal: 'right', vertical: 'top' },
+                });
               });
           } catch (error) {
             console.log(error);
             setLoading(false);
+            enqueueSnackbar(error.message, {
+              autoHideDuration: 2000,
+              anchorOrigin: { horizontal: 'right', vertical: 'top' },
+            });
           }
         }
       } catch (error) {
         console.log(error);
         setLoading(false);
+        enqueueSnackbar(error.message, {
+          autoHideDuration: 2000,
+          anchorOrigin: { horizontal: 'right', vertical: 'top' },
+        });
       }
     } else {
-      console.log(error);
       setLoading(false);
+      enqueueSnackbar(error.message, {
+        autoHideDuration: 2000,
+        anchorOrigin: { horizontal: 'right', vertical: 'top' },
+      });
     }
   };
 

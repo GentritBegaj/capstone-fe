@@ -87,6 +87,7 @@ const Message = ({ own, message }) => {
               alt="message-img"
               hideZoom="false"
               hideDownload="false"
+              imageBackgroundColor="white"
             />
           ))}
         {message.text !== '' && (

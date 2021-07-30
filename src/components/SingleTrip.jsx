@@ -128,8 +128,8 @@ const useStyles = makeStyles((theme) => ({
 const SingleTrip = ({ trip }) => {
   const history = useHistory();
   const classes = useStyles();
-  // eslint-disable-next-line no-unused-vars
-  const [{ user }, dispatch] = useStateValue();
+  const [{ user }] = useStateValue();
+
   return (
     <>
       <Paper
@@ -187,7 +187,13 @@ const SingleTrip = ({ trip }) => {
                     trip.owner.username.slice(1)}
               </p>
               <p className={classes.driverInfoBottom}>
-                <span className={classes.star}>⭐ </span> 5.0
+                <span className={classes.star}>⭐ </span>
+                {(
+                  trip?.owner.reviews?.reduce(
+                    (acc, review) => acc + review.rating,
+                    0
+                  ) / trip.owner.reviews.length
+                ).toFixed(1) || 'N/A'}
               </p>
             </div>
           </div>

@@ -87,7 +87,7 @@ const Messages = () => {
                     (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
                   )
                   .map((conversation) => (
-                    <div>
+                    <div key={uniqid()}>
                       <Contact
                         key={conversation._id}
                         conversation={conversation}

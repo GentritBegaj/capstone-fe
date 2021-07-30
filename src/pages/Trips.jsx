@@ -74,14 +74,9 @@ const Trips = () => {
           </p>
 
           <p>
-            {trips &&
-            trips.filter((trip) => trip.owner._id !== user._id).length !== 1
-              ? `${
-                  trips.filter((trip) => trip.owner._id !== user._id).length
-                } rides available`
-              : `${
-                  trips.filter((trip) => trip.owner._id !== user._id).length
-                } ride available`}
+            {trips && trips.length === 1
+              ? `${trips.length} ride available`
+              : `${trips.length} rides available`}
           </p>
         </Paper>
         <div className={classes.tripsDiv}>

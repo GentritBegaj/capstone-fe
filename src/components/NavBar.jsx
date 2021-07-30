@@ -86,7 +86,7 @@ const useStyles = makeStyles((theme) =>
 );
 
 export function NavBar() {
-  const [{ user, currentConversation }, dispatch] = useStateValue();
+  const [{ user }, dispatch] = useStateValue();
   const history = useHistory();
   const location = useLocation();
   const classes = useStyles();
@@ -222,45 +222,6 @@ export function NavBar() {
         </IconButton>
         <p>Messages </p>
       </MenuItem>
-      {/* <MenuItem onClick={handleClick}>
-        <IconButton aria-label="show 4 new mails" color="inherit">
-          <>
-            {newNotificationsArray.length > 0 ? (
-              <Badge
-                badgeContent={newNotificationsArray.length}
-                color="secondary"
-              >
-                <NotificationsIcon />
-              </Badge>
-            ) : (
-              <NotificationsIcon />
-            )}
-            {show ? (
-              <div className={classes.alert}>
-                {newNotificationsArray.length > 0 ? (
-                  newNotificationsArray.map((n) => (
-                    <div className={classes.notificationDiv}>
-                      <p
-                        onClick={() => {
-                          window.location.replace('/messages');
-                        }}
-                        className={classes.notificationsText}
-                      >
-                        {n.senderUsername.charAt(0).toUpperCase() +
-                          n.senderUsername.slice(1)}{' '}
-                        sent a new message
-                      </p>
-                    </div>
-                  ))
-                ) : (
-                  <p>No new notifications</p>
-                )}
-              </div>
-            ) : null}
-          </>
-        </IconButton>
-        <p>Notifications</p>
-      </MenuItem> */}
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           aria-label="account of current user"

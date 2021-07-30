@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Paper, Avatar } from '@material-ui/core';
+import {
+  Paper,
+  Avatar,
+  Button,
+  Modal,
+  TextareaAutosize,
+} from '@material-ui/core';
 import { NavBar } from '../components';
 import { makeStyles } from '@material-ui/core/styles';
 import SmsOutlinedIcon from '@material-ui/icons/SmsOutlined';
@@ -8,6 +14,10 @@ import axios from '../axios';
 import moment from 'moment';
 import ForumIcon from '@material-ui/icons/Forum';
 import { useStateValue } from '../contextAPI/StateProvider.js';
+import ReactStars from 'react-rating-stars-component';
+import RateReviewIcon from '@material-ui/icons/RateReview';
+import DeleteSweepOutlinedIcon from '@material-ui/icons/DeleteSweepOutlined';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -85,6 +95,61 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     cursor: 'pointer',
   },
+  reviewButton: {
+    width: 'fit-content',
+    fontSize: 18,
+    color: '#835f5ffc',
+    display: 'flex',
+    alignItems: 'center',
+    cursor: 'pointer',
+    margin: '20px 0',
+  },
+  modalForm: {
+    display: 'flex',
+    flexDirection: 'column',
+    padding: 20,
+
+    [theme.breakpoints.down('sm')]: {
+      padding: 8,
+    },
+  },
+  textArea: {
+    width: '100%',
+    maxWidth: '100%',
+    minWidth: '100%',
+    height: '200',
+    maxHeight: 150,
+    minHeight: 150,
+    margin: '10px 0',
+    padding: 5,
+    color: 'gray',
+    borderRadius: 5,
+    outline: 'none',
+  },
+  ratingDiv: {
+    display: 'flex',
+    alignItems: 'center',
+
+    [theme.breakpoints.down('md')]: {
+      flexDirection: 'column',
+      alignItems: 'start',
+    },
+  },
+  formButton: {
+    backgroundColor: '#0d8bdf',
+    color: '#fff',
+    marginTop: 20,
+  },
+  reviewDivWrapper: {
+    margin: '10px 0',
+  },
+  reviewInfoWrapper: {
+    margin: '10px 0',
+    display: 'flex',
+  },
+  reviewTextWrapper: {
+    marginLeft: 5,
+  },
 }));
 
 const Profile = () => {
@@ -92,26 +157,112 @@ const Profile = () => {
   const { id } = useParams();
   const [user, setUser] = useState();
   const history = useHistory();
-  // eslint-disable-next-line no-unused-vars
   const [state, dispatch] = useStateValue();
+  const [modalStyle] = useState(getModalStyle);
+  const [open, setOpen] = useState(false);
+  const [text, setText] = useState('');
+  const [rating, setRating] = useState(1);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleReview = async (e) => {
+    e.preventDefault();
+
+    try {
+      await axios
+        .post(
+          `users/${id}`,
+          {
+            text,
+            rating,
+          },
+          { withCredentials: true }
+        )
+        .then((response) => {
+          fetchUser();
+          setText('');
+          setRating(1);
+          handleClose();
+        })
+        .catch((err) => console.log(err));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  function getModalStyle() {
+    return {
+      width: '50vw',
+      height: 'fit-content',
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      backgroundColor: 'white',
+      border: 'none',
+      outline: 'none',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+    };
+  }
+
+  const body = (
+    <div style={modalStyle}>
+      <form className={classes.modalForm} onSubmit={handleReview}>
+        <div>
+          <TextareaAutosize
+            minRows="4"
+            maxRows="5"
+            className={classes.textArea}
+            placeholder="Leave a review..."
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+          />
+        </div>
+        <div className={classes.ratingDiv}>
+          <p style={{ marginRight: 5 }}>Rate experience with user: {'   '} </p>{' '}
+          <ReactStars
+            count={5}
+            value={rating}
+            onChange={(e) => setRating(e)}
+            size={18}
+            activeColor="#ffd700"
+          />
+        </div>
+        <Button
+          variant="contained"
+          className={classes.formButton}
+          type="submit"
+        >
+          Publish review
+        </Button>
+      </form>
+    </div>
+  );
+
+  const fetchUser = async () => {
+    try {
+      await axios
+        .get(`/users/${id}`)
+        .then((response) => {
+          setUser(response.data);
+        })
+        .catch((err) => console.log(err));
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        await axios
-          .get(`/users/${id}`)
-          .then((response) => {
-            console.log(response.data);
-            setUser(response.data);
-          })
-          .catch((err) => console.log(err));
-      } catch (error) {
-        console.log(error);
-      }
-    };
     fetchUser();
     // eslint-disable-next-line
-  }, []);
+  }, [id]);
 
   const startConversation = async () => {
     try {
@@ -212,9 +363,71 @@ const Profile = () => {
               </p>
               <ForumIcon />
             </div>
+            <div className={classes.reviewButton} onClick={handleOpen}>
+              <p style={{ marginRight: 5 }}>Leave a review</p>
+              <RateReviewIcon />
+            </div>
+            {user?.reviews.map((review) => (
+              <div className={classes.reviewDivWrapper} key={review._id}>
+                <h5>Reviews</h5>
+                <div className={classes.reviewInfoWrapper}>
+                  <div
+                    onClick={() =>
+                      history.push(
+                        review.user._id !== state.user._id
+                          ? `/user/${review.user._id}`
+                          : `/me`
+                      )
+                    }
+                  >
+                    <Avatar
+                      src={review.user.profilePic}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </div>
+                  <div className={classes.reviewTextWrapper}>
+                    <p>{review.text || ''}</p>
+                    <ReactStars
+                      count={5}
+                      value={review.rating}
+                      size={18}
+                      edit={false}
+                      activeColor="#ffd700"
+                    />
+                  </div>
+                  {state?.user?._id === review.user._id && (
+                    <Tooltip title="Delete review" placement="top-end">
+                      <DeleteSweepOutlinedIcon
+                        onClick={async () => {
+                          try {
+                            axios
+                              .delete(`users/${user._id}/${review._id}`, {
+                                withCredentials: true,
+                              })
+                              .then((response) => fetchUser())
+                              .catch((err) => console.log(err));
+                          } catch (error) {
+                            console.log(error);
+                          }
+                        }}
+                        style={{ marginLeft: 'auto', cursor: 'pointer' }}
+                      />
+                    </Tooltip>
+                  )}
+                </div>
+              </div>
+            ))}
           </Paper>
         )}
       </div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        {body}
+      </Modal>
     </>
   );
 };

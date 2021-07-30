@@ -13,7 +13,6 @@ import Profile from './pages/Profile';
 import StripeContainer from './components/StripeContainer';
 import scriptLoader from 'react-async-script-loader';
 import Messages from './pages/Messages';
-import { Redirect } from 'react-router-dom';
 import { io } from 'socket.io-client';
 import { Banner } from './components/Banner';
 
