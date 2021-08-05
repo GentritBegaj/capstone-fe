@@ -315,6 +315,19 @@ const Profile = () => {
     }
   };
 
+  const deleteReview = async (reviewId) => {
+    try {
+      axios
+        .delete(`users/${user._id}/${reviewId}`, {
+          withCredentials: true,
+        })
+        .then((response) => fetchUser())
+        .catch((err) => console.log(err));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <NavBar />
@@ -398,18 +411,7 @@ const Profile = () => {
                   {state?.user?._id === review.user._id && (
                     <Tooltip title="Delete review" placement="top-end">
                       <DeleteSweepOutlinedIcon
-                        onClick={async () => {
-                          try {
-                            axios
-                              .delete(`users/${user._id}/${review._id}`, {
-                                withCredentials: true,
-                              })
-                              .then((response) => fetchUser())
-                              .catch((err) => console.log(err));
-                          } catch (error) {
-                            console.log(error);
-                          }
-                        }}
+                        onClick={() => deleteReview(review._id)}
                         style={{ marginLeft: 'auto', cursor: 'pointer' }}
                       />
                     </Tooltip>

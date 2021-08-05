@@ -161,6 +161,8 @@ const Me = () => {
   let date = new Date();
   date.setDate(date.getDate() - 1);
 
+  console.log(user);
+
   return (
     <>
       <NavBar />

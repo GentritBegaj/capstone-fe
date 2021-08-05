@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import './App.css';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Switch, useHistory, Redirect } from 'react-router-dom';
 import LoginAndRegister from './pages/LoginAndRegister';
 import Trips from './pages/Trips';
 import axios from './axios';
@@ -16,7 +16,7 @@ import Messages from './pages/Messages';
 import { io } from 'socket.io-client';
 import { Banner } from './components/Banner';
 
-export const socket = io(`ws://localhost:3001`, {
+export const socket = io(`https://ride-share-app-be.herokuapp.com/`, {
   withCredentials: true,
   transports: ['websocket'],
 });
@@ -44,9 +44,9 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
       }
     };
 
-    localStorage.getItem('loggedIn') !== 'true'
-      ? history.push('/login')
-      : fetchUser();
+    // localStorage.getItem('loggedIn') !== 'true'
+    //   ? history.push('/login')
+    fetchUser();
     //eslint-disable-next-line
   }, []);
 
@@ -56,12 +56,16 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
     });
   }, []);
 
+  useEffect(() => {
+    user?.username?.length <= 0 && history.push('/login');
+  }, []);
+
   if (isScriptLoaded && isScriptLoadSucceed) {
     return (
       <div className="app">
         <Switch>
           <Route path="/me" exact>
-            {/* {user === undefined || (user === null && <Redirect to="/login" />)} */}
+            {user?.username?.length === 0 && <Redirect to="/login" />}
             <Me />
           </Route>
           <Route path="/" exact>
@@ -88,7 +92,7 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
           <Route path="/messages" exact>
             <Messages />
           </Route>
-          <Route path="/login">
+          <Route path="/login" exact>
             <LoginAndRegister />
           </Route>
         </Switch>
