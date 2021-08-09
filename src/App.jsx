@@ -16,7 +16,7 @@ import Messages from './pages/Messages';
 import { io } from 'socket.io-client';
 import { Banner } from './components/Banner';
 
-export const socket = io(`http://api.rideshareapp.xyz`, {
+export const socket = io(`http://localhost:3001`, {
   withCredentials: true,
   transports: ['websocket'],
 });
