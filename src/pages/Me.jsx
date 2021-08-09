@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useStateValue } from '../contextAPI/StateProvider';
 import { TextField, Button, Paper, Avatar } from '@material-ui/core';
 import { NavBar } from '../components';
@@ -152,11 +152,9 @@ const Me = () => {
     }
   };
 
-  useEffect(() => {
-    user.username === undefined ||
-      (user.username === null && <Redirect to="/login" />);
-    //eslint-disable-next-line
-  }, []);
+  if (user?.username?.length === 0) {
+    <Redirect to="/login" />;
+  }
 
   let date = new Date();
   date.setDate(date.getDate() - 1);
@@ -169,9 +167,6 @@ const Me = () => {
       <div className={classes.container}>
         {!editing && (
           <Paper elevation={0} className={classes.paperStyle}>
-            {/* {!isAfterToday && (
-
-            )} */}
             <div className={classes.infoDiv}>
               <div className={classes.imageDiv}>
                 <Avatar

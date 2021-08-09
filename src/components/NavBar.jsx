@@ -44,7 +44,6 @@ const useStyles = makeStyles((theme) =>
     links: {
       display: 'flex',
       alignItems: 'center',
-      marginRight: theme.spacing(20),
     },
     link: {
       marginRight: theme.spacing(4),

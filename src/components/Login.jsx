@@ -94,7 +94,7 @@ const Login = () => {
               required
               label="Password"
               placeholder="Enter password"
-              autocomplete="false"
+              autoComplete="false"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

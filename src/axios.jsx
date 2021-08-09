@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://ride-share-app-be.herokuapp.com',
+  baseURL: 'http://api.rideshareapp.xyz',
 });
 
 export default instance;
