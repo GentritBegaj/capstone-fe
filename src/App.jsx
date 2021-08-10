@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import './App.css';
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import LoginAndRegister from './pages/LoginAndRegister';
 import Trips from './pages/Trips';
 import axios from './axios';
