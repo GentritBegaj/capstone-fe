@@ -106,14 +106,14 @@ const Chat = ({ conversations, loadingMessages, fetchConversations }) => {
 
   function getModalStyle() {
     return {
-      width: 'fit-content',
+      width: '40vw',
       minHeight: 'fit-content',
       position: 'fixed',
       top: '50%',
       left: '50%',
       transform: 'translate(-50%, -50%)',
       backgroundColor: 'white',
-      padding: '15',
+      padding: '20',
       border: 'none',
       outline: 'none',
       display: 'flex',
@@ -125,7 +125,7 @@ const Chat = ({ conversations, loadingMessages, fetchConversations }) => {
   const body = (
     <div style={modalStyle} className={classes.paper}>
       <h3 style={{ textAlign: 'center' }}>
-        Are you sure you want to cancel trip?
+        Are you sure you want to delete conversation?
       </h3>
       <div className={classes.modalButtonsDiv}>
         <Button onClick={deleteConversation}>Yes</Button>
