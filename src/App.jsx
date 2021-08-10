@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import './App.css';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, Redirect } from 'react-router-dom';
 import LoginAndRegister from './pages/LoginAndRegister';
 import Trips from './pages/Trips';
 import axios from './axios';
@@ -66,8 +66,7 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
       <div className="app">
         <Switch>
           <Route path="/me" exact>
-            {/* {!user.username && <Redirect to="/login" />} */}
-            <Me />
+            {!user.username ? <Redirect to="/login" /> : <Me />}
           </Route>
           <Route path="/" exact>
             <Banner />

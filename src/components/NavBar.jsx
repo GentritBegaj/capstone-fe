@@ -209,7 +209,12 @@ export function NavBar() {
         </IconButton>
         <p>Publish a ride</p>
       </MenuItem>
-      <MenuItem onClick={() => window.location.replace('/messages')}>
+      <MenuItem
+        onClick={() =>
+          location.pathname !== '/messages' &&
+          window.location.replace('/messages')
+        }
+      >
         <IconButton aria-label="show 11 new notifications" color="inherit">
           {newMessagesArray.length > 0 ? (
             <Badge badgeContent={newMessagesArray.length} color="secondary">
@@ -275,7 +280,10 @@ export function NavBar() {
               </div>
               <IconButton
                 color="inherit"
-                onClick={() => window.location.replace('/messages')}
+                onClick={() =>
+                  location.pathname !== '/messages' &&
+                  window.location.replace('/messages')
+                }
               >
                 {newMessagesArray.length > 0 ? (
                   <Badge
