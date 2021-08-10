@@ -16,7 +16,7 @@ import Messages from './pages/Messages';
 import { io } from 'socket.io-client';
 import { Banner } from './components/Banner';
 
-export const socket = io(`http://api.rideshareapp.xyz`, {
+export const socket = io(`https://api.rideshareapp.xyz`, {
   withCredentials: true,
   transports: ['websocket'],
 });
@@ -66,7 +66,7 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
       <div className="app">
         <Switch>
           <Route path="/me" exact>
-            {!user.username ? <Redirect to="/login" /> : <Me />}
+            <Me />
           </Route>
           <Route path="/" exact>
             <Banner />
