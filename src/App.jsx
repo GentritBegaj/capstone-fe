@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import './App.css';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useHistory } from 'react-router-dom';
 import LoginAndRegister from './pages/LoginAndRegister';
 import Trips from './pages/Trips';
 import axios from './axios';
@@ -24,6 +24,7 @@ export const socket = io(`https://api.rideshareapp.xyz`, {
 const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
   // eslint-disable-next-line no-unused-vars
   const [{ user }, dispatch] = useStateValue();
+  const history = useHistory();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -31,13 +32,17 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
         await axios
           .get('/users/me', { withCredentials: true })
           .then((response) => {
-            dispatch({
-              type: 'SET_USER',
-              payload: response.data,
-            });
-            socket.emit('isOnline', { userID: response.data._id });
+            if (response.statusText === 'OK') {
+              dispatch({
+                type: 'SET_USER',
+                payload: response.data,
+              });
+              socket.emit('isOnline', { userID: response.data._id });
+            }
           })
-          .catch((err) => console.log(err));
+          .catch((err) => {
+            console.log(err);
+          });
       } catch (error) {
         console.log(error);
       }
@@ -66,7 +71,8 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
       <div className="app">
         <Switch>
           <Route path="/me" exact>
-            <Me />
+            {user?._id ? <Me /> : <LoginAndRegister />}
+            {/* <Me /> */}
           </Route>
           <Route path="/" exact>
             <Banner />
@@ -90,7 +96,7 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
             <StripeContainer />
           </Route>
           <Route path="/messages" exact>
-            <Messages />
+            {user?._id ? <Messages /> : <LoginAndRegister />}
           </Route>
           <Route path="/login" exact>
             <LoginAndRegister />

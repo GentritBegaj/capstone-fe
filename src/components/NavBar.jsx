@@ -209,23 +209,25 @@ export function NavBar() {
         </IconButton>
         <p>Publish a ride</p>
       </MenuItem>
-      <MenuItem
-        onClick={() =>
-          location.pathname !== '/messages' &&
-          window.location.replace('/messages')
-        }
-      >
-        <IconButton aria-label="show 11 new notifications" color="inherit">
-          {newMessagesArray.length > 0 ? (
-            <Badge badgeContent={newMessagesArray.length} color="secondary">
+      {user && (
+        <MenuItem
+          onClick={() =>
+            location.pathname !== '/messages' &&
+            window.location.replace('/messages')
+          }
+        >
+          <IconButton aria-label="show 11 new notifications" color="inherit">
+            {newMessagesArray.length > 0 ? (
+              <Badge badgeContent={newMessagesArray.length} color="secondary">
+                <MailIcon />
+              </Badge>
+            ) : (
               <MailIcon />
-            </Badge>
-          ) : (
-            <MailIcon />
-          )}
-        </IconButton>
-        <p>Messages </p>
-      </MenuItem>
+            )}
+          </IconButton>
+          <p>Messages </p>
+        </MenuItem>
+      )}
       <MenuItem onClick={handleProfileMenuOpen}>
         <IconButton
           aria-label="account of current user"
@@ -233,7 +235,7 @@ export function NavBar() {
           aria-haspopup="true"
           color="inherit"
         >
-          <Avatar src={user.profilePic} />
+          <Avatar src={user?.profilePic} />
         </IconButton>
         <p onClick={() => window.location.replace('/me')}>Profile</p>
       </MenuItem>
@@ -278,24 +280,26 @@ export function NavBar() {
                   </Link>
                 </div>
               </div>
-              <IconButton
-                color="inherit"
-                onClick={() =>
-                  location.pathname !== '/messages' &&
-                  window.location.replace('/messages')
-                }
-              >
-                {newMessagesArray.length > 0 ? (
-                  <Badge
-                    badgeContent={newMessagesArray.length}
-                    color="secondary"
-                  >
+              {user && (
+                <IconButton
+                  color="inherit"
+                  onClick={() =>
+                    location.pathname !== '/messages' &&
+                    window.location.replace('/messages')
+                  }
+                >
+                  {newMessagesArray.length > 0 ? (
+                    <Badge
+                      badgeContent={newMessagesArray.length}
+                      color="secondary"
+                    >
+                      <MailIcon />
+                    </Badge>
+                  ) : (
                     <MailIcon />
-                  </Badge>
-                ) : (
-                  <MailIcon />
-                )}
-              </IconButton>
+                  )}
+                </IconButton>
+              )}
 
               <IconButton
                 onClick={handleClick}
@@ -347,7 +351,7 @@ export function NavBar() {
                 onClick={handleProfileMenuOpen}
                 color="inherit"
               >
-                <Avatar src={user.profilePic} />
+                <Avatar src={user?.profilePic} />
               </IconButton>
             </div>
             <div className={classes.sectionMobile}>

@@ -271,14 +271,14 @@ const Profile = () => {
       });
       const conversations = response.data;
       const existingConversation = conversations.find((conversation) =>
-        conversation.members.find((member) => member._id === user._id)
+        conversation.members.find((member) => member._id === user?._id)
       );
       if (existingConversation) {
         try {
           await axios
             .put(
               `conversations/${existingConversation._id}/retrieveConversation`,
-              { receiverId: user._id },
+              { receiverId: user?._id },
               { withCredentials: true }
             )
             .then((response) => {
@@ -297,7 +297,7 @@ const Profile = () => {
           const response = await axios.post(
             '/conversations',
             {
-              receiverId: user._id,
+              receiverId: user?._id,
             },
             { withCredentials: true }
           );
@@ -318,7 +318,7 @@ const Profile = () => {
   const deleteReview = async (reviewId) => {
     try {
       axios
-        .delete(`users/${user._id}/${reviewId}`, {
+        .delete(`users/${user?._id}/${reviewId}`, {
           withCredentials: true,
         })
         .then((response) => fetchUser())
@@ -338,34 +338,34 @@ const Profile = () => {
               <div className={classes.imageDiv}>
                 <Avatar
                   className={classes.sizeAvatar}
-                  src={user?.profilePic && user.profilePic}
+                  src={user?.profilePic && user?.profilePic}
                 />
               </div>
               <h2 className={classes.usernameHeader}>
                 {user?.username &&
-                  user.username.charAt(0).toUpperCase() +
-                    user.username.slice(1)}
+                  user?.username.charAt(0).toUpperCase() +
+                    user?.username.slice(1)}
               </h2>
               <p style={{ color: '#a38c8c', marginTop: 5 }}>
                 {user?.dateOfBirth &&
-                  moment(new Date()).diff(user.dateOfBirth, 'year')}{' '}
+                  moment(new Date()).diff(user?.dateOfBirth, 'year')}{' '}
                 years old
               </p>
             </div>
             <div className={classes.bioDiv}>
               <SmsOutlinedIcon className={classes.bioIcon} />
-              {user?.bio && user.bio}
+              {user?.bio && user?.bio}
             </div>
             <div className={classes.tripsDiv}>
               <p style={{ textAlign: 'left' }}>
                 {user?.trips &&
-                  user.trips.filter((trip) => trip.owner === user._id)
+                  user?.trips.filter((trip) => trip.owner === user?._id)
                     .length}{' '}
                 trips published
               </p>
             </div>
             <div className={classes.tripsDiv}>
-              Member since {moment(user.createdAt).format(' MMMM Do YYYY')}
+              Member since {moment(user?.createdAt).format(' MMMM Do YYYY')}
             </div>
             <div className={classes.contactDiv} onClick={startConversation}>
               <p style={{ marginRight: 5 }}>
@@ -387,14 +387,14 @@ const Profile = () => {
                   <div
                     onClick={() =>
                       history.push(
-                        review.user._id !== state.user._id
-                          ? `/user/${review.user._id}`
+                        review.user?._id !== state.user?._id
+                          ? `/user/${review.user?._id}`
                           : `/me`
                       )
                     }
                   >
                     <Avatar
-                      src={review.user.profilePic}
+                      src={review.user?.profilePic}
                       style={{ cursor: 'pointer' }}
                     />
                   </div>
@@ -408,7 +408,7 @@ const Profile = () => {
                       activeColor="#ffd700"
                     />
                   </div>
-                  {state?.user?._id === review.user._id && (
+                  {state?.user?._id === review.user?._id && (
                     <Tooltip title="Delete review" placement="top-end">
                       <DeleteSweepOutlinedIcon
                         onClick={() => deleteReview(review._id)}

@@ -385,13 +385,13 @@ const TripDetails = () => {
           container
           className={classes.root}
           style={
-            trip?.owner._id !== user._id
+            trip?.owner._id !== user?._id
               ? { height: 'calc(100vh - 104px)' }
               : { height: 'calc(100vh - 64px)' }
           }
         >
           <Paper className={classes.paperStyle}>
-            {trip.owner._id === user._id && trip?.cancelled === false && (
+            {trip.owner._id === user?._id && trip?.cancelled === false && (
               <div className={classes.moreIconWrapper}>
                 <Tooltip title="Cancel trip">
                   <BlockIcon onClick={handleOpen} />
@@ -399,7 +399,7 @@ const TripDetails = () => {
               </div>
             )}
 
-            {trip.owner._id === user._id && trip?.cancelled && (
+            {trip.owner._id === user?._id && trip?.cancelled && (
               <div className={classes.moreIconWrapper}>
                 <Tooltip title="Publish trip">
                   <CheckCircleIcon onClick={cancelTrip} />
@@ -443,7 +443,7 @@ const TripDetails = () => {
                   ${trip.pricePerPerson && trip.pricePerPerson.toFixed(2)}
                 </h3>
               </div>
-              {trip?.owner._id === user._id &&
+              {trip?.owner._id === user?._id &&
                 trip?.participants.length > 0 &&
                 trip?.participants.map((p) => (
                   <div className={classes.participants}>
@@ -460,7 +460,7 @@ const TripDetails = () => {
                     </div>
                   </div>
                 ))}
-              {trip.owner._id !== user._id && (
+              {trip.owner._id !== user?._id && (
                 <div
                   className={classes.userDiv}
                   onClick={() => history.push(`/user/${trip.owner._id}`)}
@@ -481,7 +481,7 @@ const TripDetails = () => {
                   <p>{trip && trip.description}</p>
                 </div>
               )}
-              {trip?.owner._id !== user._id && (
+              {trip?.owner._id !== user?._id && (
                 <div className={classes.contactDiv} onClick={startConversation}>
                   <p style={{ marginRight: 5 }}>
                     Contact{' '}
@@ -501,27 +501,27 @@ const TripDetails = () => {
                 )}
               </div>
               {trip?.participants.filter(
-                (participant) => participant._id._id === user._id
+                (participant) => participant._id._id === user?._id
               ).length > 0 && (
                 <div className={classes.reservedTickets}>
                   <h4>
                     You have{'  '}
                     {
                       trip.participants.find(
-                        (participant) => participant._id._id === user._id
+                        (participant) => participant._id._id === user?._id
                       ).tickets
                     }
                     {'   '}
                     reserved seats for this trip
                   </h4>
                   {trip?.participants.find(
-                    (participant) => participant._id._id === user._id
+                    (participant) => participant._id._id === user?._id
                   ).tickets > 0 && (
                     <div className={classes.cancelTicketsDiv}>
                       {[
                         ...new Array(
                           trip.participants.find(
-                            (participant) => participant._id._id === user._id
+                            (participant) => participant._id._id === user?._id
                           ).tickets
                         ),
                       ].map((ticket) => (
@@ -544,7 +544,7 @@ const TripDetails = () => {
               )}
             </div>
           </Paper>
-          {trip?.owner._id !== user._id && (
+          {trip?.owner._id !== user?._id && (
             <div className={classes.bottomDiv}>
               <Button
                 onClick={() => history.push('/payment')}

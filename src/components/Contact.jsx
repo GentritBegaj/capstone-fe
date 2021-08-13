@@ -77,7 +77,7 @@ const Contact = ({ conversation }) => {
   const newMessagesNumberRef = useRef(0);
 
   const getReceiver = conversationCopy?.members?.find(
-    (member) => member._id !== user._id
+    (member) => member._id !== user?._id
   );
 
   const circle = <div className={classes.shape} />;
@@ -89,14 +89,14 @@ const Contact = ({ conversation }) => {
   }, []);
 
   useEffect(() => {
-    socket.emit('isOnline', { userID: user._id });
+    socket.emit('isOnline', { userID: user?._id });
     //eslint-disable-next-line
   }, []);
 
   useEffect(() => {
     socket.on('ownMessage', (message) => {
       if (
-        message.sender === user._id &&
+        message.sender === user?._id &&
         conversation._id === message.conversationId
       ) {
         // console.log(message);

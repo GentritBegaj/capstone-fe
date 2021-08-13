@@ -163,7 +163,7 @@ const SingleTrip = ({ trip }) => {
             </div>
           </Tooltip>
         </div>
-        {trip?.owner._id === user._id &&
+        {trip?.owner._id === user?._id &&
           trip?.participants.length > 0 &&
           trip?.participants.map((p) => (
             <div className={classes.participants}>

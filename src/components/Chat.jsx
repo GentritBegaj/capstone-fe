@@ -137,7 +137,7 @@ const Chat = ({ conversations, loadingMessages, fetchConversations }) => {
   const getReceiver = () => {
     return conversations
       ?.find((conversation) => conversation?._id === currentConversation?._id)
-      ?.members?.find((member) => member._id !== user._id);
+      ?.members?.find((member) => member._id !== user?._id);
   };
 
   useEffect(() => {
@@ -171,15 +171,15 @@ const Chat = ({ conversations, loadingMessages, fetchConversations }) => {
             '/messages',
             {
               conversationId: currentConversation._id,
-              sender: user._id,
+              sender: user?._id,
               text: input,
             },
             { withCredentials: true }
           )
           .then((response) => {
             const messageToDisplay = {
-              sender: user._id,
-              senderUsername: user.username,
+              sender: user?._id,
+              senderUsername: user?.username,
               conversationId: currentConversation._id,
               text: input,
               key: uniqid(),
@@ -198,14 +198,14 @@ const Chat = ({ conversations, loadingMessages, fetchConversations }) => {
 
         formData.append('picture', file);
         formData.append('conversationId', currentConversation._id);
-        formData.append('sender', user._id);
+        formData.append('sender', user?._id);
         if (input !== '') formData.append('text', input);
         await axios
           .post('/messages', formData, { withCredentials: true })
           .then((response) => {
             const messageToDisplay = {
-              sender: user._id,
-              senderUsername: user.username,
+              sender: user?._id,
+              senderUsername: user?.username,
               conversationId: currentConversation._id,
               text: input,
               key: uniqid(),
@@ -239,7 +239,7 @@ const Chat = ({ conversations, loadingMessages, fetchConversations }) => {
             '/messages?location=true',
             {
               conversationId: currentConversation._id,
-              sender: user._id,
+              sender: user?._id,
               text: '📌 Location',
               location: true,
               latitude: position.coords.latitude,
@@ -249,8 +249,8 @@ const Chat = ({ conversations, loadingMessages, fetchConversations }) => {
           )
           .then((response) => {
             const messageToDisplay = {
-              sender: user._id,
-              senderUsername: user.username,
+              sender: user?._id,
+              senderUsername: user?.username,
               conversationId: currentConversation._id,
               text: '📌 Location',
               key: uniqid(),
@@ -305,7 +305,7 @@ const Chat = ({ conversations, loadingMessages, fetchConversations }) => {
                 <Message
                   key={message._id}
                   message={message}
-                  own={message.sender === user._id}
+                  own={message.sender === user?._id}
                 />
               </div>
             ))}

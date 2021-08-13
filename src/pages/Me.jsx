@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useStateValue } from '../contextAPI/StateProvider';
 import { TextField, Button, Paper, Avatar } from '@material-ui/core';
 import { NavBar } from '../components';
@@ -8,8 +8,8 @@ import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import axios from '../axios';
 import moment from 'moment';
 import SingleTrip from '../components/SingleTrip';
-import { Redirect, useHistory } from 'react-router-dom';
 import ReactStars from 'react-rating-stars-component';
+import { useHistory } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -99,10 +99,10 @@ const Me = () => {
   const classes = useStyles();
   const [{ user }, dispatch] = useStateValue({});
   const [userObject, setUserObject] = useState({
-    username: user.username,
-    email: user.email,
-    dateOfBirth: user.dateOfBirth,
-    bio: user.bio,
+    username: user?.username,
+    email: user?.email,
+    dateOfBirth: user?.dateOfBirth,
+    bio: user?.bio,
     profilePic: '',
   });
   const [editing, setEditing] = useState(false);
@@ -152,10 +152,6 @@ const Me = () => {
     }
   };
 
-  if (user?.username?.length === 0) {
-    <Redirect to="/login" />;
-  }
-
   let date = new Date();
   date.setDate(date.getDate() - 1);
 
@@ -171,7 +167,7 @@ const Me = () => {
               <div className={classes.imageDiv}>
                 <Avatar
                   className={classes.sizeAvatar}
-                  src={user?.profilePic && user.profilePic}
+                  src={user?.profilePic && user?.profilePic}
                 />
 
                 <EditOutlinedIcon
@@ -181,29 +177,29 @@ const Me = () => {
               </div>
               <h2 className={classes.usernameHeader}>
                 {user?.username &&
-                  user.username.charAt(0).toUpperCase() +
-                    user.username.slice(1)}
+                  user?.username.charAt(0).toUpperCase() +
+                    user?.username.slice(1)}
               </h2>
               <p style={{ color: '#a38c8c', marginTop: 5 }}>
                 {user?.dateOfBirth &&
-                  moment(new Date()).diff(user.dateOfBirth, 'year')}{' '}
+                  moment(new Date()).diff(user?.dateOfBirth, 'year')}{' '}
                 years old
               </p>
             </div>
             <div className={classes.bioDiv}>
               <SmsOutlinedIcon className={classes.bioIcon} />
-              {user?.bio && user.bio}
+              {user?.bio && user?.bio}
             </div>
             <div className={classes.tripsDiv}>
               <p style={{ textAlign: 'left' }}>
                 {user?.trips &&
-                  user.trips.filter((trip) => trip.owner._id === user._id)
+                  user?.trips.filter((trip) => trip.owner._id === user?._id)
                     .length}{' '}
                 trips published
               </p>
             </div>
             <div className={classes.tripsDiv}>
-              Member since {moment(user.createdAt).format(' MMMM Do YYYY')}
+              Member since {moment(user?.createdAt).format(' MMMM Do YYYY')}
             </div>
             {user?.trips?.filter(
               (trip) => new Date(trip.departureDate) > new Date(date)
@@ -211,7 +207,7 @@ const Me = () => {
               <div className={classes.upcomingTripsDiv}>
                 <h3>Upcoming trips</h3>
                 <br />
-                {user.trips
+                {user?.trips
                   .filter(
                     (trip) => new Date(trip.departureDate) > new Date(date)
                   )
@@ -227,14 +223,14 @@ const Me = () => {
                   <div
                     onClick={() =>
                       history.push(
-                        review.user._id !== user._id
-                          ? `/user/${review.user._id}`
+                        review.user?._id !== user?._id
+                          ? `/user/${review.user?._id}`
                           : null
                       )
                     }
                   >
                     <Avatar
-                      src={review.user.profilePic}
+                      src={review.user?.profilePic}
                       style={{ cursor: 'pointer' }}
                     />
                   </div>
