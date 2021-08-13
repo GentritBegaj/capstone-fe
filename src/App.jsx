@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import './App.css';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import LoginAndRegister from './pages/LoginAndRegister';
 import Trips from './pages/Trips';
 import axios from './axios';
@@ -24,7 +24,6 @@ export const socket = io(`https://api.rideshareapp.xyz`, {
 const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
   // eslint-disable-next-line no-unused-vars
   const [{ user }, dispatch] = useStateValue();
-  const history = useHistory();
 
   useEffect(() => {
     const fetchUser = async () => {
