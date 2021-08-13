@@ -48,8 +48,6 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
       }
     };
 
-    // localStorage.getItem('loggedIn') !== 'true'
-    //   ? history.push('/login')
     fetchUser();
     //eslint-disable-next-line
   }, []);
