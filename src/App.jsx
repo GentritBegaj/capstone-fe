@@ -60,10 +60,6 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
     });
   }, []);
 
-  // useEffect(() => {
-  //    history.push();
-  // }, []);
-
   console.log(user);
 
   if (isScriptLoaded && isScriptLoadSucceed) {
