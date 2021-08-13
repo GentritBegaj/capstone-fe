@@ -63,7 +63,7 @@ export const reducer = (state = initialState, action) => {
       };
     case 'EMPTY_STATE':
       return {
-        user: {},
+        user: null,
         trips: [],
         trip: {},
         origin: '',

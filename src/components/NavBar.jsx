@@ -18,6 +18,7 @@ import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useStateValue } from '../contextAPI/StateProvider';
 import axios from '../axios';
 import { socket } from '../App';
+import { Button } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -181,7 +182,13 @@ export function NavBar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={() => window.location.replace('/me')}>Me</MenuItem>
+      <MenuItem
+        onClick={() =>
+          location.pathname !== '/me' && window.location.replace('/me')
+        }
+      >
+        Me
+      </MenuItem>
       <MenuItem onClick={handleLogout}>Log out</MenuItem>
     </Menu>
   );
@@ -203,7 +210,9 @@ export function NavBar() {
         </IconButton>
         <p>Find a ride</p>
       </MenuItem>
-      <MenuItem onClick={() => history.push('/add-trip')}>
+      <MenuItem
+        onClick={() => window.location.assign(user ? '/add-trip' : '/login')}
+      >
         <IconButton aria-label="Publish a ride" color="inherit">
           <AddIcon />
         </IconButton>
@@ -213,10 +222,10 @@ export function NavBar() {
         <MenuItem
           onClick={() =>
             location.pathname !== '/messages' &&
-            window.location.replace('/messages')
+            window.location.assign('/messages')
           }
         >
-          <IconButton aria-label="show 11 new notifications" color="inherit">
+          <IconButton aria-label="show new notifications" color="inherit">
             {newMessagesArray.length > 0 ? (
               <Badge badgeContent={newMessagesArray.length} color="secondary">
                 <MailIcon />
@@ -228,17 +237,40 @@ export function NavBar() {
           <p>Messages </p>
         </MenuItem>
       )}
-      <MenuItem onClick={handleProfileMenuOpen}>
-        <IconButton
-          aria-label="account of current user"
-          aria-controls="primary-search-account-menu"
-          aria-haspopup="true"
-          color="inherit"
-        >
-          <Avatar src={user?.profilePic} />
-        </IconButton>
-        <p onClick={() => window.location.replace('/me')}>Profile</p>
-      </MenuItem>
+      {user ? (
+        <MenuItem onClick={handleProfileMenuOpen}>
+          <IconButton
+            aria-label="account of current user"
+            aria-controls="primary-search-account-menu"
+            aria-haspopup="true"
+            color="inherit"
+          >
+            <Avatar src={user?.profilePic} />
+          </IconButton>
+          <p
+            onClick={() =>
+              location.pathname !== '/me' && window.location.assign('/me')
+            }
+          >
+            Profile
+          </p>
+        </MenuItem>
+      ) : (
+        <MenuItem onClick={() => window.location.assign('/login')}>
+          <p
+            style={{
+              marginLeft: 'auto',
+              fontSize: 20,
+              backgroundColor: '#3f98bb',
+              padding: '5px 37px',
+              borderRadius: 20,
+              color: '#fff',
+            }}
+          >
+            Log in
+          </p>
+        </MenuItem>
+      )}
     </Menu>
   );
 
@@ -266,7 +298,7 @@ export function NavBar() {
               <div className={classes.links}>
                 <div className={classes.link}>
                   <Link
-                    to="/add-trip"
+                    to={user ? '/add-trip' : '/login'}
                     style={{
                       textDecoration: 'none',
                       color: 'inherit',
@@ -300,59 +332,70 @@ export function NavBar() {
                   )}
                 </IconButton>
               )}
-
-              <IconButton
-                onClick={handleClick}
-                aria-label="show new notifications"
-                color="inherit"
-              >
-                <>
-                  {!show && newNotificationsArray.length > 0 ? (
-                    <Badge
-                      badgeContent={newNotificationsArray.length}
-                      color="secondary"
-                      onClick={handleClick}
-                    >
+              {user && (
+                <IconButton
+                  onClick={handleClick}
+                  aria-label="show new notifications"
+                  color="inherit"
+                >
+                  <>
+                    {!show && newNotificationsArray.length > 0 ? (
+                      <Badge
+                        badgeContent={newNotificationsArray.length}
+                        color="secondary"
+                        onClick={handleClick}
+                      >
+                        <NotificationsIcon />
+                      </Badge>
+                    ) : (
                       <NotificationsIcon />
-                    </Badge>
-                  ) : (
-                    <NotificationsIcon />
-                  )}
-                  {show ? (
-                    <div className={classes.alert}>
-                      {newNotificationsArray.length > 0 ? (
-                        newNotificationsArray.map((n) => (
-                          <div className={classes.notificationDiv}>
-                            <p
-                              onClick={() => {
-                                window.location.replace('/messages');
-                              }}
-                              className={classes.notificationsText}
-                            >
-                              {n.senderUsername.charAt(0).toUpperCase() +
-                                n.senderUsername.slice(1)}{' '}
-                              sent a new message
-                            </p>
-                          </div>
-                        ))
-                      ) : (
-                        <p>No new notifications</p>
-                      )}
-                    </div>
-                  ) : null}
-                </>
-              </IconButton>
+                    )}
+                    {show ? (
+                      <div className={classes.alert}>
+                        {newNotificationsArray.length > 0 ? (
+                          newNotificationsArray.map((n) => (
+                            <div className={classes.notificationDiv}>
+                              <p
+                                onClick={() => {
+                                  window.location.replace('/messages');
+                                }}
+                                className={classes.notificationsText}
+                              >
+                                {n.senderUsername.charAt(0).toUpperCase() +
+                                  n.senderUsername.slice(1)}{' '}
+                                sent a new message
+                              </p>
+                            </div>
+                          ))
+                        ) : (
+                          <p>No new notifications</p>
+                        )}
+                      </div>
+                    ) : null}
+                  </>
+                </IconButton>
+              )}
 
-              <IconButton
-                edge="end"
-                aria-label="account of current user"
-                aria-controls={menuId}
-                aria-haspopup="true"
-                onClick={handleProfileMenuOpen}
-                color="inherit"
-              >
-                <Avatar src={user?.profilePic} />
-              </IconButton>
+              {user ? (
+                <IconButton
+                  edge="end"
+                  aria-label="account of current user"
+                  aria-controls={menuId}
+                  aria-haspopup="true"
+                  onClick={handleProfileMenuOpen}
+                  color="inherit"
+                >
+                  <Avatar src={user?.profilePic} />
+                </IconButton>
+              ) : (
+                <Button
+                  variant="contained"
+                  style={{ backgroundColor: '#3f98bb', color: '#fff' }}
+                  onClick={() => history.push('/login')}
+                >
+                  Log in
+                </Button>
+              )}
             </div>
             <div className={classes.sectionMobile}>
               <IconButton

@@ -143,7 +143,7 @@ export const AddTrip = () => {
             autoHideDuration: 1000,
             anchorOrigin: { horizontal: 'right', vertical: 'top' },
           });
-          window.location.replace('/');
+          window.location.assign('/');
         })
         .catch((err) => enqueueSnackbar(err.message), 'error');
     } catch (error) {
