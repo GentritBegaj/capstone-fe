@@ -184,7 +184,7 @@ export function NavBar() {
     >
       <MenuItem
         onClick={() =>
-          location.pathname !== '/me' && window.location.replace('/me')
+          location.pathname !== '/me' && window.location.assign('/me')
         }
       >
         Me
@@ -317,7 +317,7 @@ export function NavBar() {
                   color="inherit"
                   onClick={() =>
                     location.pathname !== '/messages' &&
-                    window.location.replace('/messages')
+                    window.location.assign('/messages')
                   }
                 >
                   {newMessagesArray.length > 0 ? (
@@ -357,7 +357,7 @@ export function NavBar() {
                             <div className={classes.notificationDiv}>
                               <p
                                 onClick={() => {
-                                  window.location.replace('/messages');
+                                  window.location.assign('/messages');
                                 }}
                                 className={classes.notificationsText}
                               >

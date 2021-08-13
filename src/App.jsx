@@ -89,7 +89,7 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
             <StripeContainer />
           </Route>
           <Route path="/messages" exact>
-            {user?._id ? <Messages /> : <LoginAndRegister />}
+            <Messages />
           </Route>
           <Route path="/login" exact>
             <LoginAndRegister />
