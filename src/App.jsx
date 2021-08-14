@@ -64,8 +64,8 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
       <div className="app">
         <Switch>
           <Route path="/me" exact>
-            {/* {user ? <Me /> : <LoginAndRegister />} */}
-            <Me />
+            {user ? <Me /> : <LoginAndRegister />}
+            {/* <Me /> */}
           </Route>
           <Route path="/" exact>
             <Banner />

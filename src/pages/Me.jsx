@@ -152,11 +152,6 @@ const Me = () => {
     }
   };
 
-  useEffect(() => {
-    !user && window.location.assign('/login');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   let date = new Date();
   date.setDate(date.getDate() - 1);
 
