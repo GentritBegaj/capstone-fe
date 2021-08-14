@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useStateValue } from '../contextAPI/StateProvider';
 import { TextField, Button, Paper, Avatar } from '@material-ui/core';
 import { NavBar } from '../components';
@@ -154,6 +154,7 @@ const Me = () => {
 
   useEffect(() => {
     !user && window.location.assign('/login');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let date = new Date();
