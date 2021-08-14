@@ -547,10 +547,10 @@ const TripDetails = () => {
           {trip?.owner._id !== user?._id && (
             <div className={classes.bottomDiv}>
               <Button
-                onClick={() => history.push('/payment')}
+                onClick={() => history.push(user ? '/payment' : '/login')}
                 className={classes.button}
               >
-                Continue
+                {user ? 'Continue to payment' : 'Log in to continue'}
               </Button>
             </div>
           )}
