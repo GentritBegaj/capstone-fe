@@ -152,6 +152,10 @@ const Me = () => {
     }
   };
 
+  useEffect(() => {
+    !user && window.location.assign('/login');
+  }, []);
+
   let date = new Date();
   date.setDate(date.getDate() - 1);
 
