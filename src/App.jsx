@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useLayoutEffect } from 'react';
 import './App.css';
 import { Route, Switch } from 'react-router-dom';
 import LoginAndRegister from './pages/LoginAndRegister';
@@ -25,7 +25,7 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
   // eslint-disable-next-line no-unused-vars
   const [{ user }, dispatch] = useStateValue();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const fetchUser = async () => {
       try {
         await axios
