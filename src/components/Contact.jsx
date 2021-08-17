@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'wrap',
   },
   shape: {
-    backgroundColor: '#e69b12',
+    backgroundColor: '#32CD32',
     width: 10,
     height: 10,
     borderRadius: '50%',
