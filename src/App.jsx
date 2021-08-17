@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect } from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { Route, Switch } from 'react-router-dom';
 import LoginAndRegister from './pages/LoginAndRegister';
@@ -16,7 +16,7 @@ import Messages from './pages/Messages';
 import { io } from 'socket.io-client';
 import { Banner } from './components/Banner';
 
-export const socket = io(`https://api.rideshareapp.xyz`, {
+export const socket = io(process.env.REACT_APP_BACKEND_URL, {
   withCredentials: true,
   transports: ['websocket'],
 });
@@ -25,7 +25,7 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
   // eslint-disable-next-line no-unused-vars
   const [{ user }, dispatch] = useStateValue();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const fetchUser = async () => {
       try {
         await axios

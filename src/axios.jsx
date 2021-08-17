@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: 'https://api.rideshareapp.xyz',
+  baseURL: process.env.REACT_APP_BACKEND_URL,
 });
 
 export default instance;
