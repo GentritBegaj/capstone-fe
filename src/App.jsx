@@ -16,7 +16,7 @@ import Messages from './pages/Messages';
 import { io } from 'socket.io-client';
 import { Banner } from './components/Banner';
 
-export const socket = io(process.env.REACT_APP_BACKEND_URL, {
+export const socket = io(`https://api.rideshareapp.xyz`, {
   withCredentials: true,
   transports: ['websocket'],
 });
