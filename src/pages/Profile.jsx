@@ -380,45 +380,56 @@ const Profile = () => {
               <p style={{ marginRight: 5 }}>Leave a review</p>
               <RateReviewIcon />
             </div>
-            {user?.reviews.map((review) => (
-              <div className={classes.reviewDivWrapper} key={review._id}>
-                <h5>Reviews</h5>
-                <div className={classes.reviewInfoWrapper}>
-                  <div
-                    onClick={() =>
-                      history.push(
-                        review.user?._id !== state.user?._id
-                          ? `/user/${review.user?._id}`
-                          : `/me`
-                      )
-                    }
-                  >
-                    <Avatar
-                      src={review.user?.profilePic}
-                      style={{ cursor: 'pointer' }}
-                    />
+            {user?.reviews.length > 0 && (
+              <>
+                <h5>
+                  Reviews (
+                  {(
+                    user?.reviews.reduce((acc, cv) => acc + cv.rating, 0) /
+                    user?.reviews.length
+                  ).toFixed(1)}
+                  /5 )
+                </h5>
+                {user?.reviews.map((review) => (
+                  <div className={classes.reviewDivWrapper} key={review._id}>
+                    <div className={classes.reviewInfoWrapper}>
+                      <div
+                        onClick={() =>
+                          history.push(
+                            review.user?._id !== state.user?._id
+                              ? `/user/${review.user?._id}`
+                              : `/me`
+                          )
+                        }
+                      >
+                        <Avatar
+                          src={review.user?.profilePic}
+                          style={{ cursor: 'pointer' }}
+                        />
+                      </div>
+                      <div className={classes.reviewTextWrapper}>
+                        <p>{review.text || ''}</p>
+                        <ReactStars
+                          count={5}
+                          value={review.rating}
+                          size={18}
+                          edit={false}
+                          activeColor="#ffd700"
+                        />
+                      </div>
+                      {state?.user?._id === review.user?._id && (
+                        <Tooltip title="Delete review" placement="top-end">
+                          <DeleteSweepOutlinedIcon
+                            onClick={() => deleteReview(review._id)}
+                            style={{ marginLeft: 'auto', cursor: 'pointer' }}
+                          />
+                        </Tooltip>
+                      )}
+                    </div>
                   </div>
-                  <div className={classes.reviewTextWrapper}>
-                    <p>{review.text || ''}</p>
-                    <ReactStars
-                      count={5}
-                      value={review.rating}
-                      size={18}
-                      edit={false}
-                      activeColor="#ffd700"
-                    />
-                  </div>
-                  {state?.user?._id === review.user?._id && (
-                    <Tooltip title="Delete review" placement="top-end">
-                      <DeleteSweepOutlinedIcon
-                        onClick={() => deleteReview(review._id)}
-                        style={{ marginLeft: 'auto', cursor: 'pointer' }}
-                      />
-                    </Tooltip>
-                  )}
-                </div>
-              </div>
-            ))}
+                ))}
+              </>
+            )}
           </Paper>
         )}
       </div>
