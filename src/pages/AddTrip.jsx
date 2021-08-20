@@ -140,8 +140,9 @@ export const AddTrip = () => {
       })
         .then((response) => {
           enqueueSnackbar(`Trip was successfully published`, {
-            autoHideDuration: 1000,
+            autoHideDuration: 1500,
             anchorOrigin: { horizontal: 'right', vertical: 'top' },
+            variant: 'success',
           });
           window.location.assign('/');
         })

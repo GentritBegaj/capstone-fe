@@ -14,6 +14,7 @@ import {
 import { makeStyles } from '@material-ui/core/styles';
 import axios from '../axios';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((theme) => ({
   gridStyle: {
@@ -41,6 +42,7 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -54,8 +56,15 @@ const Login = () => {
         { withCredentials: true }
       )
       .then(() => {
-        localStorage.setItem('loggedIn', 'true');
-        window.location.replace('/');
+        enqueueSnackbar('Login successful! Redirecting...', {
+          autoHideDuration: 1800,
+          anchorOrigin: { horizontal: 'right', vertical: 'top' },
+          variant: 'success',
+        });
+        setTimeout(() => {
+          localStorage.setItem('loggedIn', 'true');
+          window.location.replace('/');
+        }, 2000);
       })
       .catch((err) => console.log(err));
     setEmail('');

@@ -19,6 +19,7 @@ import { useStateValue } from '../contextAPI/StateProvider';
 import axios from '../axios';
 import { socket } from '../App';
 import { Button } from '@material-ui/core';
+import { useSnackbar } from 'notistack';
 
 const useStyles = makeStyles((theme) =>
   createStyles({
@@ -96,6 +97,7 @@ export function NavBar() {
   const [newMessagesArray, setNewMessagesArray] = useState([]);
   const [newNotificationsArray, setNewNotificationsArray] = useState([]);
   const [show, setShow] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleClick = () => {
     if (show) {
@@ -110,11 +112,18 @@ export function NavBar() {
     await axios
       .get('/users/logout', { withCredentials: true })
       .then((response) => {
-        window.location.replace('/login');
-        dispatch({
-          type: 'EMPTY_STATE',
+        enqueueSnackbar('Please wait! Logging out', {
+          autoHideDuration: 1500,
+          anchorOrigin: { horizontal: 'right', vertical: 'top' },
+          variant: 'info',
         });
-        localStorage.setItem('loggedIn', 'false');
+        setTimeout(() => {
+          window.location.replace('/login');
+          dispatch({
+            type: 'EMPTY_STATE',
+          });
+          localStorage.setItem('loggedIn', 'false');
+        }, 1600);
       });
   };
 

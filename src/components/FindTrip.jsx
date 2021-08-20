@@ -109,6 +109,7 @@ const FindTrip = () => {
             enqueueSnackbar('Finding trips...', {
               autoHideDuration: 2000,
               anchorOrigin: { horizontal: 'right', vertical: 'top' },
+              variant: 'info',
             });
             setTimeout(() => {
               history.push('/trips');
