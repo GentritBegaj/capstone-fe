@@ -47,7 +47,7 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
       }
     };
 
-    fetchUser();
+    localStorage.getItem('loggedIn') === 'true' && fetchUser();
     //eslint-disable-next-line
   }, []);
 
@@ -56,8 +56,6 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
       // console.log(socket.id);
     });
   }, []);
-
-  console.log(user);
 
   if (isScriptLoaded && isScriptLoadSucceed) {
     return (
