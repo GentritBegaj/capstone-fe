@@ -233,7 +233,6 @@ const Chat = ({ conversations, loadingMessages, fetchConversations }) => {
   const getLocation = async () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async function (position) {
-        console.log(position);
         await axios
           .post(
             '/messages?location=true',

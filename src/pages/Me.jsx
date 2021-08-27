@@ -21,16 +21,25 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'scroll',
   },
   form: {
-    width: 500,
+    width: '85vw',
     padding: 20,
     display: 'flex',
     flexDirection: 'column',
+
+    [theme.breakpoints.down('md')]: {
+      textAlign: 'center',
+    },
   },
   input: {
-    minWidth: '100%',
+    width: '100%',
+    minWidth: '70%',
     marginBottom: '20px',
     margin: '2px',
     boxSizing: ' border-box',
+
+    [theme.breakpoints.down('md')]: {
+      width: '80%',
+    },
   },
   paperStyle: {
     width: '80%',
@@ -79,6 +88,11 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     display: 'flex',
     justifyContent: 'space-between',
+
+    [theme.breakpoints.down('md')]: {
+      width: '80%',
+      margin: '0 auto',
+    },
   },
   upcomingTripsDiv: {
     textAlign: 'center',
@@ -92,6 +106,44 @@ const useStyles = makeStyles((theme) => ({
   },
   reviewTextWrapper: {
     marginLeft: 5,
+  },
+  upperInfoWrapper: {
+    display: 'flex',
+    width: '100%',
+
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+  },
+  profilePicDiv: {
+    display: 'flex',
+    flexDirection: 'column',
+
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: 20,
+      textAlign: 'center',
+    },
+  },
+  profilePic: {
+    height: 150,
+    width: 150,
+    borderRadius: 30,
+    cursor: 'pointer',
+
+    [theme.breakpoints.down('sm')]: {
+      width: '30vw',
+      minWidth: 150,
+    },
+  },
+  inputsWrapper: {
+    marginLeft: 100,
+
+    [theme.breakpoints.down('sm')]: {
+      marginLeft: 0,
+      marginTop: 20,
+    },
   },
 }));
 
@@ -251,55 +303,72 @@ const Me = () => {
         )}
         {editing && (
           <form className={classes.form} onSubmit={handleSubmit}>
-            <TextField
-              type="text"
-              name="username"
-              label="Username"
-              value={userObject.username}
-              onChange={handleChange}
-              className={classes.input}
-            />
-            <TextField
-              type="email"
-              name="email"
-              label="Email address"
-              value={userObject.email}
-              onChange={handleChange}
-              className={classes.input}
-            />
-            <TextField
-              type="date"
-              margin="normal"
-              // id="date-picker-dialog"
-              // format="MM/dd/yyyy"
-              name="dateOfBirth"
-              value={userObject.dateOfBirth}
-              onChange={handleChange}
-              KeyboardButtonProps={{
-                'aria-label': 'change date',
-              }}
-              className={classes.input}
-            />
-            <TextField
-              type="text"
-              margin="normal"
-              name="bio"
-              label="Bio"
-              value={userObject.bio}
-              onChange={handleChange}
-              KeyboardButtonProps={{
-                'aria-label': 'bio',
-              }}
-              className={classes.input}
-            />
-            <TextField
-              label="Profile picture"
-              type="file"
-              onChange={(e) =>
-                setUserObject({ ...userObject, profilePic: e.target.files[0] })
-              }
-              className={classes.input}
-            />
+            <div className={classes.upperInfoWrapper}>
+              <div className={classes.profilePicDiv}>
+                <label htmlFor="profilePic">
+                  <img
+                    src={user.profilePic}
+                    alt="profile-pic"
+                    className={classes.profilePic}
+                  />
+                </label>
+                <TextField
+                  label="Profile picture"
+                  type="file"
+                  id="profilePic"
+                  onChange={(e) =>
+                    setUserObject({
+                      ...userObject,
+                      profilePic: e.target.files[0],
+                    })
+                  }
+                  className={classes.input}
+                  style={{ display: 'none' }}
+                />
+              </div>
+              <div className={classes.inputsWrapper}>
+                <TextField
+                  type="text"
+                  name="username"
+                  label="Username"
+                  value={userObject.username}
+                  onChange={handleChange}
+                  className={classes.input}
+                />
+                <TextField
+                  type="email"
+                  name="email"
+                  label="Email address"
+                  value={userObject.email}
+                  onChange={handleChange}
+                  className={classes.input}
+                />
+                <TextField
+                  type="date"
+                  margin="normal"
+                  name="dateOfBirth"
+                  value={userObject.dateOfBirth}
+                  onChange={handleChange}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                  className={classes.input}
+                />
+                <TextField
+                  type="text"
+                  margin="normal"
+                  name="bio"
+                  label="Bio"
+                  value={userObject.bio}
+                  onChange={handleChange}
+                  KeyboardButtonProps={{
+                    'aria-label': 'bio',
+                  }}
+                  className={classes.input}
+                />
+              </div>
+            </div>
+
             <div className={classes.buttonsDiv}>
               <Button
                 type="button"
