@@ -9,13 +9,15 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'start',
     alignItems: 'center',
-    padding: theme.spacing(1),
+    padding: '10px 8px',
     width: '100%',
     cursor: 'pointer',
-    marginBottom: 10,
     [theme.breakpoints.down('xs')]: {
       padding: theme.spacing(0),
       fontSize: 12,
+    },
+    '&:hover': {
+      backgroundColor: '#e9eaeb',
     },
   },
   avatar: {
