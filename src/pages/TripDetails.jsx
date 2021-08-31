@@ -436,7 +436,7 @@ const TripDetails = () => {
                 </div>
               </div>
               <div className={classes.priceDiv}>
-                <h3 style={{ color: '#c2a0a0', fontWeight: 500 }}>
+                <h3 style={{ color: '#000', fontWeight: 500 }}>
                   Price per passenger
                 </h3>
                 <h3>
@@ -447,7 +447,7 @@ const TripDetails = () => {
                 trip?.participants.length > 0 &&
                 trip?.participants.map((p) => (
                   <div className={classes.participants}>
-                    <h5>Confirmed participants:</h5>
+                    <h5>Confirmed participants</h5>
                     <div
                       className={classes.participantsRight}
                       onClick={() => history.push(`/user/${p._id._id}`)}

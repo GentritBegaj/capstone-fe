@@ -167,7 +167,7 @@ const SingleTrip = ({ trip }) => {
           trip?.participants.length > 0 &&
           trip?.participants.map((p) => (
             <div className={classes.participants}>
-              <h5>Confirmed participants:</h5>
+              <h5>Confirmed participants</h5>
               <div>
                 <Avatar src={p._id.profilePic} />
                 <small>

@@ -7,7 +7,6 @@ import axios from './axios';
 import { AddTrip } from './pages/AddTrip';
 import { useStateValue } from './contextAPI/StateProvider';
 import Me from './pages/Me';
-import FindTrip from './components/FindTrip';
 import TripDetails from './pages/TripDetails';
 import Profile from './pages/Profile';
 import StripeContainer from './components/StripeContainer';
@@ -68,9 +67,7 @@ const App = ({ isScriptLoaded, isScriptLoadSucceed }) => {
           <Route path="/" exact>
             <Banner />
           </Route>
-          <Route path="/find-trip" exact>
-            <FindTrip />
-          </Route>
+
           <Route path="/trips" exact>
             <Trips />
           </Route>

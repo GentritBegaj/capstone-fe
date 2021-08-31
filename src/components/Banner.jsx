@@ -91,6 +91,16 @@ const useStyles = makeStyles((theme) =>
     divider: {
       margin: '0 5px',
     },
+    error: {
+      fontSize: '13px',
+      color: 'red',
+      margin: 5,
+
+      [theme.breakpoints.up('lg')]: {
+        margin: 0,
+        marginTop: -10,
+      },
+    },
   })
 );
 export const Banner = () => {
@@ -102,12 +112,31 @@ export const Banner = () => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
   const history = useHistory();
+  const [originCityError, setOriginCityError] = useState(false);
+  const [destinationCityError, setDestinationCityError] = useState(false);
+  const [dateOfTripError, setDateOfTripError] = useState(false);
+  const [numberOfPassengersError, setNumberOfPassengersError] = useState(false);
 
   const localTime = new Date();
   const maxDate = moment(localTime).format('YYYY-MM-DD');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (from === '') {
+      setOriginCityError(true);
+      return;
+    } else setOriginCityError(false);
+    if (to === '') {
+      setDestinationCityError(true);
+      return;
+    } else {
+      setDestinationCityError(false);
+    }
+    if (date === '') {
+      setDateOfTripError(true);
+      return;
+    } else setDateOfTripError(false);
 
     const query = `/trips${from !== '' ? `?originCity='${from}'` : ''}${
       to !== '' ? `&destinationCity='${to}'` : ''
@@ -205,6 +234,11 @@ export const Banner = () => {
                     );
                   })}
                 </div>
+                {originCityError && (
+                  <p className={classes.error}>
+                    Origin city of trip is required
+                  </p>
+                )}
               </div>
             )}
           </PlacesAutocomplete>
@@ -251,6 +285,11 @@ export const Banner = () => {
                     );
                   })}
                 </div>
+                {destinationCityError && (
+                  <p className={classes.error}>
+                    Destination city of trip is required
+                  </p>
+                )}
               </div>
             )}
           </PlacesAutocomplete>
@@ -259,27 +298,32 @@ export const Banner = () => {
             flexItem
             className={classes.divider}
           />
-          <TextField
-            className={classes.input}
-            label="When"
-            type="date"
-            value={date}
-            InputProps={{
-              inputProps: {
-                min: `${maxDate}`,
-                max: '',
-                label: 'Date',
-              },
-              startAdornment: (
-                <InputAdornment
-                  className={classes.adornment}
-                  position="start"
-                />
-              ),
-              disableUnderline: true,
-            }}
-            onChange={(e) => setDate(e.target.value)}
-          />
+          <div>
+            <TextField
+              className={classes.input}
+              label="When"
+              type="date"
+              value={date}
+              InputProps={{
+                inputProps: {
+                  min: `${maxDate}`,
+                  max: '',
+                  label: 'Date',
+                },
+                startAdornment: (
+                  <InputAdornment
+                    className={classes.adornment}
+                    position="start"
+                  />
+                ),
+                disableUnderline: true,
+              }}
+              onChange={(e) => setDate(e.target.value)}
+            />
+            {dateOfTripError && (
+              <p className={classes.error}>Date of trip is required</p>
+            )}
+          </div>
           <Divider
             orientation="vertical"
             flexItem
@@ -306,7 +350,7 @@ export const Banner = () => {
           />
           <button
             className={classes.input}
-            disabled={!(from !== '' && to !== '' && date !== '')}
+            // disabled={!(from !== '' && to !== '' && date !== '')}
             type="submit"
             style={{
               backgroundColor: '#3f98bb',
