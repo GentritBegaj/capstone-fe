@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     cursor: 'pointer',
     [theme.breakpoints.down('xs')]: {
-      padding: theme.spacing(0),
+      padding: '5px 2px',
       fontSize: 12,
     },
     '&:hover': {
