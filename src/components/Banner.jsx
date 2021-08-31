@@ -115,7 +115,6 @@ export const Banner = () => {
   const [originCityError, setOriginCityError] = useState(false);
   const [destinationCityError, setDestinationCityError] = useState(false);
   const [dateOfTripError, setDateOfTripError] = useState(false);
-  const [numberOfPassengersError, setNumberOfPassengersError] = useState(false);
 
   const localTime = new Date();
   const maxDate = moment(localTime).format('YYYY-MM-DD');
